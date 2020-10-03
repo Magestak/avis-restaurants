@@ -1,0 +1,14 @@
+/********* Reset ************/
+* {
+    margin: 0;
+    padding: 0;
+}
+/********* wrapper et génériques *********/
+
+
+
+/************** Carte *****************/
+#maCarte {
+    width: 800px;
+    height: 600px;
+}

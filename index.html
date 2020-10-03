@@ -6,25 +6,32 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Avis sur les restaurants géolocalisés</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
 </head>
 <body>
 <!-- Wrapper -->
 <div id="wrapper" class="w3-auto  w3-padding-16">
-
+    <div id="maCarte"></div>
 
 </div>
 <!-- Fin wrapper -->
 
 <!-- Footer -->
-<footer id="main-footer" class="w3-container w3-black w3-padding-16">
+<footer id="main-footer" class="w3-container w3-black w3-padding-16 w3-bottom">
     <div class="w3-stretch w3-center">
         <p class="w3-small">Copyright 2020 - <a href="html/mentions-legales.html">Mentions légales</a> - Site réalisé par
             <a href="http://www.nicolas-coureau.fr/">Nicolas Coureau</a></p>
-        <p class="w3-small w3-hide-small">Projet 6 - Parcours Développeur d'application - Frontend - <a
-                href="https://openclassrooms.com/fr/paths/60-developpeur-dapplication-frontend">OPENCLASSROOMS</a>
+        <p class="w3-small w3-hide-small">Projet 6 - Parcours Développeur d'application - Frontend -
+            <a href="https://openclassrooms.com/fr/paths/60-developpeur-dapplication-frontend">OPENCLASSROOMS</a>
         </p>
     </div>
 </footer>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 <script src="js/jquery.js"></script>
