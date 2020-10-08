@@ -40,6 +40,33 @@ class Restaurant {
         let marqueur = L.marker(latLng).addTo(that.maCarte);
         marqueur.bindPopup(titleInfo);
 }
+    /**
+     * Crée la liste des restaurants affichés sur le côté de la map
+     */
+    // TODO: Méthode à finir
+    initHtml() {
+        let that = this;
+        let listRestaurants = document.getElementById('restaurants-list');
 
-    // TODO: création de la méthode html pour apparition des infos sur la map.
+        // On crée un clone de la structure HTML pour insérer chaque résultat obtenu
+        let resultats = document.querySelector('.resultats').cloneNode(true);
+
+        // On crée insère le nom dfu restaurant
+        let nameResto = document.querySelector('.name-resto');
+        nameResto.textContent = `${that.name}`;
+
+        // On affiche la note moyenne des commentaires
+        let noteResto = document.querySelector('.note-resto');
+        let x = Math.round(that.rating);
+        noteResto.textContent = `${x} étoiles`;
+        
+        // On ajoute l'adresse du restaurant
+        let addressResto = document.querySelector('.address-resto');
+        addressResto.textContent = `${that.address}`;
+
+
+        // On insère les éléments crées dans le DOM
+        listRestaurants.appendChild(resultats);
+
+    }
 }

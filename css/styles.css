@@ -9,6 +9,6 @@
 
 /************** Carte *****************/
 #map {
-    width: 800px;
-    height: 600px;
+    width: auto;
+    height: 800px;
 }
