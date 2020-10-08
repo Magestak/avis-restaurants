@@ -1,16 +1,23 @@
 class Map {
+    /**
+     * Classe correspondant à la map
+     * @constructor
+     * @return { object }    // La map
+     */
     constructor() {
-        //this.carte = {};
-        //this.coordsFromBrowser = {};
+        this.maCarte = {};
+        this.positionDefault = { lat: 48.866667, lng: 2.333333 }; //Position par défaut = Paris
+        this.coordsFromBrowser = {
+            lat: this.positionDefault.lat,
+            lng: this.positionDefault.lng
+        };
     }
 
+    /**
+     * Initialise la map
+     */
     initMap() {
-        // On détermine une position par défaut sur la carte
-        const coordsParis = { lat: 48.866667, lng: 2.333333 };
-        let coordsFromBrowser = {
-            lat: coordsParis.lat,
-            lng: coordsParis.lng
-        };
+        let that = this;
 
         // On récupère la latitude et la longitude de la position de l'utilisateur et on gère les erreurs
         if (navigator.geolocation) {
@@ -29,12 +36,10 @@ class Map {
                 position.coords.latitude,
                 position.coords.longitude
             );
+            that.coordsFromBrowser.lat = position.coords.latitude;
+            that.coordsFromBrowser.lng = position.coords.longitude;
 
-            coordsFromBrowser.lat = position.coords.latitude;
-            coordsFromBrowser.lng = position.coords.longitude;
-            console.log("COORDSFROMBROWSER: ", coordsFromBrowser);
-
-            carte.setView([coordsFromBrowser.lat, coordsFromBrowser.lng], 13);
+            that.maCarte.setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 13);
         }
 
         /**
@@ -45,8 +50,6 @@ class Map {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
                     confirm("User denied the request for Geolocation.")
-                    carte.setView([coordsFromBrowser.lat, coordsFromBrowser.lng], 13);
-                    console.log("POSITION DEFAUT: ")
                     break;
                 case error.POSITION_UNAVAILABLE:
                     confirm("Location information is unavailable.")
@@ -59,23 +62,59 @@ class Map {
                     break;
             }
         }
-        // On initialise la carte
-        const carte = L.map('maCarte').setView([coordsFromBrowser.lat, coordsFromBrowser.lng], 13);
 
+        // On initialise la carte
+        this.maCarte = L.map('map').setView([this.coordsFromBrowser.lat, this.coordsFromBrowser.lng], 13);
         // On charge les "tuiles"
         L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
             minZoom: 1,
             maxZoom: 20,
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(carte);
+        }).addTo(this.maCarte);
 
         // Ajout d'un marqueur
-        // TODO: voir pour changer de style et couleur de marqueurs.
-        //      voir pour mettre les coords de l'utilisateur.
-        var marqueur = L.marker([43.765938, -1.1794394]).addTo(carte);
-        console.log("MARQUEUR: ", typeof(marqueur))
-        marqueur.bindPopup("<p>Ma position</p>");
+        // TODO: Création d'un marqueur pour la position de l'utilisateur
+        //  voir pour changer de style et couleur de marqueurs.
+        var marqueur = L.marker(L.latLng(43.7751634, -1.1833137)).addTo(this.maCarte); // OK
+        marqueur.bindPopup("<p>Vous êtes ici</p>");
+        //[43.7751634, -1.1833137]
 
+        // Appelle la méthode pour intégrer les restaurants à la map.
+        this.getJson("../js/restaurants.json");
+
+    }
+
+    /**
+     * Requète vers le fichier json
+     * @param { string } url    // L'url de la requète
+     */
+    getJson (url) {
+        let that = this;
+        // Utilisation de la fonction XHR "ajaxGet"
+        ajaxGet(url, function (results) {
+            let result = JSON.parse(results);
+            for (let i =0; i < result.length; i++) {
+                let num1 = result[i].ratings[0].stars;
+                let num2 = result[i].ratings[1].stars;
+                let somme = num1 + num2;
+                let moy = Math.round(somme / result[i].ratings.length); // TODO: vérifier le résultat (virgule)
+
+                // Création d'une instance de la classe restaurant
+                let restaurant = new Restaurant(that.maCarte,
+                    null,
+                    null,
+                    L.latLng(result[i].lat, result[i].long),
+                    result[i].restaurantName,
+                    result[i].address,
+                    moy,
+                    null,
+                    result[i].ratings,);
+                restaurant.createMarker();
+                //let marqueur = L.marker(L.latLng(result[i].lat, result[i].long)).addTo(that.maCarte); // OK
+                // TODO: Rattachement de la méthode de création html d'un restaurant
+            }
+
+        });
     }
 }
 

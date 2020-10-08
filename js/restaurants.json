@@ -1,0 +1,98 @@
+[
+  {
+    "restaurantName":"Bronco",
+    "address":"39 Rue des Petites Écuries, 75010 Paris",
+    "lat":48.8737815,
+    "long":2.3501649,
+    "ratings":[
+      {
+        "stars":4,
+        "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+      },
+      {
+        "stars":5,
+        "comment":"Tout simplement mon restaurant préféré !"
+      }
+    ]
+  },
+  {
+    "restaurantName":"Babalou",
+    "address":"4 Rue Lamarck, 75018 Paris",
+    "lat":48.8865035,
+    "long":2.3442197,
+    "ratings":[
+      {
+        "stars":5,
+        "comment":"Une minuscule pizzeria délicieuse cachée juste à côté du Sacré choeur !"
+      },
+      {
+        "stars":3,
+        "comment":"J'ai trouvé ça correct, sans plus"
+      }
+    ]
+  },
+  {
+    "restaurantName":"Relais De La Poste",
+    "address":"24 Avenue de Maremne, 40140 Magescq",
+    "lat":43.778829,
+    "long":-1.218248,
+    "ratings":[
+      {
+        "stars":5,
+        "comment":"Un établissement d'une finesse et d'une classe de raffinement comme l'on trouve rarement. J'ai eu la chance de venir dans le restaurant chez Coussau ou j'ai découvert une cuisine et un service digne des plus grands noms de la gastronomie du sud-ouest. Merci a toute l'équipe pour leurs professionnalisme et leur accueil, bravo encore pour la totalité. Je recommande de s'arrêter et de découvrir l'endroit. Juste point d'amélioration, pouvoir proposé des thés de qualité."
+      },
+      {
+        "stars":5,
+        "comment":"Une belle découverte faite par hasard, en voulant nous abriter pendant une averse (ce que l'hôtel nous a très gentiment permis de faire, encore merci), nous nous sommes finalement retrouvés à déjeuner dans le restaurant étoilé qui était tout simplement parfait, du service aux assiettes en passant par le cadre, donnant sur un superbe jardin. Nous reviendrons sans hésiter déjeuner ou séjourner dans cet établissement sérieux, professionnel et convivial. Le 2e restaurant plus simple, l'auberge, avait l'air aussi très bien. Une belle adresse."
+      }
+    ]
+  },
+  {
+    "restaurantName":"Restaurant Hôtel de la Paix",
+    "address":"Avenue de Maremne 40140 Magescq",
+    "lat":43.780905,
+    "long":-1.217357,
+    "ratings":[
+      {
+        "stars":2,
+        "comment":"Moyen, bruit côté route, mais personnel très serviable et bon accueil."
+      },
+      {
+        "stars":3,
+        "comment":"Correct sans plus.. personnel aimable."
+      }
+    ]
+  },
+  {
+    "restaurantName":"Gracia Michel",
+    "address":"720 Chemin de Napoléon, 40990 Angoumé",
+    "lat":43.711834,
+    "long":-1.153443,
+    "ratings":[
+      {
+        "stars":5,
+        "comment":"Comme d habitude, rien de négatif à dire ! Délicieuses pizzas, accueil agréable, déco sympa ds la salle de réception."
+      },
+      {
+        "stars": 5,
+        "comment": "Très bonne pizzas , accueil sympa je vais revenir."
+      }
+    ]
+  },
+  {
+    "restaurantName":"Restaurant El Campo",
+    "address":"1011 Route de Constantine, 40990 Mées",
+    "lat":43.723978,
+    "long":-1.139230,
+    "ratings":[
+      {
+        "stars":5,
+        "comment":"Très bon restaurant, accueil vraiment sympa, cadre au top et repas de qualité ! Je recommande."
+      },
+      {
+        "stars": 4,
+        "comment": "Bonne cuisine lieu très intéressant spectacle appliqué. Bonne adresse"
+      }
+    ]
+  }
+]
