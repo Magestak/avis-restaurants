@@ -12,3 +12,7 @@
     width: auto;
     height: 800px;
 }
+/************* Résultats **************/
+.item {
+    overflow: auto;
+}
