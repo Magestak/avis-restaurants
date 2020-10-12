@@ -16,3 +16,11 @@
 .item {
     overflow: auto;
 }
+/* Bouton Close */
+.close {
+    float: right;
+    margin-right: 6%;
+    font-size: 28px;
+    font-weight: bold;
+    display: block;
+}

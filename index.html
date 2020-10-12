@@ -14,13 +14,51 @@
 <!-- Wrapper -->
 <div id="wrapper" class="w3-panel  w3-padding-16">
     <div class="w3-row">
+        <!-- Colonne de gauche avec les restaurants -->
         <div class="w3-bar-block w3-col" style="width: 30%">
             <div id="restaurants-list">
 
             </div>
         </div>
+
+        <!-- La map -->
         <div id="map" class="w3-col" style="width: 70%"></div>
+
+        <!-- Modal ajout de commentaires -->
+        <div id="myModal" class="w3-modal">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+
+                <div class="w3-center modal-header"><br>
+                    <span onclick="document.getElementById('myModal').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
+                    <h4 class="modal-title">Ajouter votre commentaire</h4>
+                </div>
+
+                <form class="w3-container" method="post">
+                    <div class="w3-section">
+                        <p>
+                            <label for="pseudo-comment-modal-resto">Votre pseudo : </label>
+                            <input type="text" class="w3-input" name="pseudo" id="pseudo-comment-modal-resto" placeholder="Votre pseudo"/>
+                        </p>
+                        <p>
+                            <label for="comment-modal-resto">Votre commentaire : </label>
+                            <input type="text" class="w3-input" name="comment" id="comment-modal-resto" placeholder="Votre commentaire" row="3" maxlength="150"/>
+                        </p>
+                        <p>
+                            <label for="note-modal-resto">Votre note : </label>
+                            <input type="number" class="w3-input" name="note" id="note-modal-resto" placeholder="Votre note de 0 à 5" maxlength="1"/>
+                        </p>
+                        <button id="bouton-valid-modal-resto" class="w3-button" type="submit">Validez</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
     </div>
+    <div class="ajout-commentaires" hidden>
+
+    </div>
+
 
 </div>
 <!-- Fin wrapper -->
@@ -45,6 +83,7 @@
 <script src="js/main.js"></script>
 <script src="js/map.js"></script>
 <script src="js/restaurants.js"></script>
+<script src="js/comments.js"></script>
 
 </body>
 </html>
