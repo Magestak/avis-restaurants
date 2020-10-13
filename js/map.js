@@ -121,18 +121,15 @@ class Map {
                     x,
                     null,
                     result[i].ratings,);
-                restaurant.createMarker(); // Crée un marqueur pour chaque restaurant.
-                //console.log("RESTAURANT: ", restaurant);
-                // TODO: voir soucis de 1 résultat en plus??
+                restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                 restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
-                //console.log("RESTAURANT AVEC INITHTML: ", restaurant);
 
             }
 
         });
     }
-    // TODO: rajouter la méthode de geocoding
-    // TODO: méthode pour n'afficher sur le côté que les restaurants visible sur la map
+    // TODO: 1- Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
+    // TODO: rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
     // TODO: récup image google street view
 }
 

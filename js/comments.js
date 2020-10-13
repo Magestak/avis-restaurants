@@ -1,28 +1,30 @@
 class Comment {
-    constructor(name, note, comment) {
-        this.nom = nom;
-        this.note = note;
+    constructor(name, rating, comment, resultats) {
+        this.name = name;
+        this.rating = rating;
         this.comment = comment;
-        this.resultats = document.getElementsByClassName('resultats');
+        this.resultats = resultats;
     }
 
     /**
      * Insère le contenu du commentaire lors du chargement des fichiers Json
-     * @return {object} le contenu html correspondant au commentaire
+     * @return { object } le contenu html correspondant au commentaire
      */
     initializeHtml() {
         let that = this;
-        let ajoutCommentaires = document.getElementsByClassName('ajout-commentaires');
+        let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
+        console.log("AJOUT COMMENTAIRES DANS COMMENT.JS: ", ajoutCommentaires);
         ajoutCommentaires.removeAttribute("hidden");
 
-        // pseudo
+        // Récupère le pseudo
         let ajoutNomCommentaires = document.createElement('div');
         ajoutNomCommentaires.className = 'ajout-nom-commentaires';
         ajoutNomCommentaires.style.display = "block";
-        ajoutNomCommentaires.textContent = `Votre pseudo : ${that.nom}`;
+        ajoutNomCommentaires.textContent = `Votre pseudo : ${that.name}`;
 
-        // note
-        let x = Math.floor(that.note);
+        // Récupère la note
+        // TODO: regarder le NaN
+        let x = Math.floor(this.rating);
         let ajoutNoteCommentaires = document.createElement('div');
         ajoutNoteCommentaires.className = 'ajout-note-commentaires';
         ajoutNoteCommentaires.textContent = "";
@@ -41,16 +43,18 @@ class Comment {
         // modal comment
         //self.itemNode.querySelector('#buttonModalAddCommentId').display = "none";
 
-        // commentaire
+        // Récupère le commentaire
         let ajoutCommentCommentaires = document.createElement('div');
         ajoutCommentCommentaires.className = 'ajout-comment-commentaires';
         ajoutCommentCommentaires.style.display = "block";
         ajoutCommentCommentaires.textContent = `Votre commentaire : " ${that.comment} "`;
 
-        // appendchild
+        // Insère les éléments crées dans le DOM
         ajoutCommentaires.appendChild(ajoutNomCommentaires);
         ajoutCommentaires.appendChild(ajoutNoteCommentaires);
         ajoutCommentaires.appendChild(etoilesCommentaires);
         ajoutCommentaires.appendChild(ajoutCommentCommentaires);
+        this.resultats.appendChild(ajoutCommentaires);
     }
+
 }

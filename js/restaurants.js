@@ -19,10 +19,15 @@ class Restaurant {
         this.name = name;
         this.address = address;
         this.rating = rating;
-        this.photos = photos;
+        if(photos != undefined) {
+            this.photos = photos[0].getUrl({'maxWidth': 200, 'maxHeight': 200});
+        } else {
+            this.photos = "http://racine.cccommunication.biz/v1/img/photo/photos_defaut/pas0BRnew.png";
+        }
         if (commentsJson != undefined) {
             this.commentsJson = commentsJson;
         }
+        this.resultats;
     }
 
     /**
@@ -55,8 +60,8 @@ class Restaurant {
         let a = 0;
 
         // On crée une <div> pour accueillir le contenu HTML pour chaque restaurant
-        let resultats = document.createElement('div');
-        resultats.className = 'resultats';
+        this.resultats = document.createElement('div');
+        this.resultats.className = 'resultats';
 
         // On crée un élément <h3> pour le nom du restaurant
         let nameResto = document.createElement('h3');
@@ -124,8 +129,8 @@ class Restaurant {
         closeCommentResto.style.display = "none";
 
         // Charge les commentaires provenant de l' API et les rend non visibles
-        resultats.style.height = "120px";
-        resultats.style.overflow = "hidden";
+        this.resultats.style.height = "120px";
+        this.resultats.style.overflow = "hidden";
 
         // Crée un bouton d'exécution "modal" et le rend non visible
         let boutonAjoutCommentResto = document.createElement('button');
@@ -133,14 +138,12 @@ class Restaurant {
         boutonAjoutCommentResto.setAttribute("onclick", "document.getElementById('myModal').style.display='block'");
         boutonAjoutCommentResto.style.display = 'none';
 
-
-
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
         nameResto.addEventListener('click', function(e) {
             e.target.style.color = "#FC6354";
-            resultats.style.backgroundColor = "#EFEEE4";
-            resultats.style.height = "500px";
-            resultats.style.overflow = "auto";
+            that.resultats.style.backgroundColor = "#EFEEE4";
+            that.resultats.style.height = "500px";
+            that.resultats.style.overflow = "auto";
 
             // Affiche la photo du restaurant
             imageResto.style.display = 'block';
@@ -148,19 +151,27 @@ class Restaurant {
             // Affiche le bouton "close"
             closeCommentResto.style.display = 'block';
 
+            // Affiche les commentaires de l'API
+            if(a === 0) {
+                that.getComments();
+                a = 1;
+            } if (a === 1 ) {
+                console.log('pas de nouvel request');
+            };
+
 
             // Fonction qui masque les éléments qui étaient par défaut non visible.
             closeCommentResto.addEventListener('click', function(e){
-                setTimeout(function() {
-                    nameResto.style.color = "";
-                    resultats.style.backgroundColor = '';
-                    boutonAjoutCommentResto.style.display = "none";
-                },1000);
-                resultats.style.height = "120px";
-                resultats.style.overflow = "hidden";
+                nameResto.style.color = "";
+                that.resultats.style.backgroundColor = '';
+                boutonAjoutCommentResto.style.display = "none";
+                that.resultats.style.height = "120px";
+                that.resultats.style.overflow = "hidden";
                 closeCommentResto.style.display = "none";
-                let ajoutNoteCommentaires = document.getElementsByClassName('ajout-commentaires');
-                ajoutNoteCommentaires.style.display = 'none';
+                let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
+                ajoutCommentaires.setAttribute("hidden", true);
+                //ajoutCommentaires.style.display = 'none';
+                ajoutCommentaires.textContent = "";
             })
 
 
@@ -168,15 +179,32 @@ class Restaurant {
 
         // On insère les éléments crées dans le DOM
         let listRestaurants = document.getElementById('restaurants-list');
-        resultats.appendChild(nameResto);
-        resultats.appendChild(etoileResto);
-        resultats.appendChild(closeCommentResto);
-        resultats.appendChild(addressResto);
-        resultats.appendChild(commentResto);
-        resultats.appendChild(imageResto);
-        resultats.appendChild(noteResto);
-        resultats.appendChild(boutonAjoutCommentResto);
-        listRestaurants.appendChild(resultats);
+        this.resultats.appendChild(nameResto);
+        this.resultats.appendChild(etoileResto);
+        this.resultats.appendChild(closeCommentResto);
+        this.resultats.appendChild(addressResto);
+        this.resultats.appendChild(commentResto);
+        this.resultats.appendChild(imageResto);
+        this.resultats.appendChild(noteResto);
+        this.resultats.appendChild(boutonAjoutCommentResto);
+        listRestaurants.appendChild(this.resultats);
 
+    }
+
+    /**
+     * Charge les commentaires de l' API
+     * @return { object } Les commentaires correspondant aux restaurants
+     */
+    getComments() {
+        let that = this;
+
+        if (that.commentsJson) {
+            that.commentsJson.forEach(function(comment) {
+                let commentObject = new Comment("Anonyme", comment.stars, comment.comment, that.resultats);
+                commentObject.initializeHtml();
+            });
+        } else {
+            console.log("METHODE GET COMMENTS A FINIR :", );
+        }
     }
 }
