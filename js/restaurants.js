@@ -8,10 +8,9 @@ class Restaurant {
      * @param { string } name           // Le nom du restaurant
      * @param { string } address        // L'adresse du restaurant
      * @param { number } rating         // La note moyenne du restaurant
-     * @param { object } photos         // Photo retourné par l'API du restaurant
      * @param { object } commentsJson   // Indique si le restaurant est à prendre dans la base JSON ou dans l'API
      */
-    constructor(maCarte, service, id, location, name, address, rating, photos, commentsJson) {
+    constructor(maCarte, service, id, location, name, address, rating, commentsJson) {
         this.maCarte = maCarte;
         this.service = service;
         this.id = id;
@@ -19,14 +18,10 @@ class Restaurant {
         this.name = name;
         this.address = address;
         this.rating = rating;
-        if(photos != undefined) {
-            this.photos = photos[0].getUrl({'maxWidth': 200, 'maxHeight': 200});
-        } else {
-            this.photos = "http://racine.cccommunication.biz/v1/img/photo/photos_defaut/pas0BRnew.png";
-        }
         if (commentsJson != undefined) {
             this.commentsJson = commentsJson;
         }
+        this.photos = this.getUrl();
         this.resultats;
     }
 
@@ -47,7 +42,6 @@ class Restaurant {
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
         });
-        // TODO: personnalisation de l'icône à faire
         let marqueur = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
         marqueur.bindPopup(titleInfo);
 }
@@ -57,7 +51,6 @@ class Restaurant {
     // TODO: Méthode à finir
     initHtml() {
         let that = this;
-        let a = 0;
 
         // On crée une <div> pour accueillir le contenu HTML pour chaque restaurant
         this.resultats = document.createElement('div');
@@ -90,6 +83,7 @@ class Restaurant {
         else if (x === 5) {etoileResto.src = "../img/5_stars.png";}
         else {etoileResto.src = "../img/0_star.png";}
 
+        // TODO: voir si sa place n'est pas plutôt dans getComments et si oui comment l'insérer dans "résultats" à la bonne place.
         // Crée une <div> pour les commentaires
         let commentResto = document.createElement('div');
         commentResto.className = 'comment-resto';
@@ -115,7 +109,7 @@ class Restaurant {
         commentResto.appendChild(commentDateResto);
         commentResto.appendChild(commentImageResto);
         commentResto.appendChild(commentNoteResto);
-
+        ///////////////////////////////////////////////////////////////
 
         // Crée une balise <img> pour afficher une photo du restaurant et la rend non visible
         let imageResto = document.createElement('img');
@@ -139,7 +133,7 @@ class Restaurant {
         boutonAjoutCommentResto.style.display = 'none';
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
-        nameResto.addEventListener('click', function(e) {
+        nameResto.addEventListener('click', function (e) {
             e.target.style.color = "#FC6354";
             that.resultats.style.backgroundColor = "#EFEEE4";
             that.resultats.style.height = "500px";
@@ -152,16 +146,12 @@ class Restaurant {
             closeCommentResto.style.display = 'block';
 
             // Affiche les commentaires de l'API
-            if(a === 0) {
-                that.getComments();
-                a = 1;
-            } if (a === 1 ) {
-                console.log('pas de nouvel request');
-            };
+            that.getComments();
+
 
 
             // Fonction qui masque les éléments qui étaient par défaut non visible.
-            closeCommentResto.addEventListener('click', function(e){
+            closeCommentResto.addEventListener('click', function() {
                 nameResto.style.color = "";
                 that.resultats.style.backgroundColor = '';
                 boutonAjoutCommentResto.style.display = "none";
@@ -207,4 +197,18 @@ class Restaurant {
             console.log("METHODE GET COMMENTS A FINIR :", );
         }
     }
+
+    /**
+     * Récupère l'image du restaurant avec street view
+     * @return {string}
+     */
+    getUrl() {
+        let latitude = this.location.lat;
+        let longitude = this.location.lng;
+
+        let urlPhotos = "https://maps.googleapis.com/maps/api/streetview?size=300x150&" +
+            "location="+latitude+","+longitude+"&heading=151.78&pitch=-0.76&radius=50&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
+        return urlPhotos;
+    }
+
 }

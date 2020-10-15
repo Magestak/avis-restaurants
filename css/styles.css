@@ -13,13 +13,19 @@
     height: 800px;
 }
 /************* Résultats **************/
-.item {
+.resultats {
     overflow: auto;
+    position: relative;
+}
+/* Nom Restaurant */
+.name-resto {
+    cursor: pointer;
 }
 /* Bouton Close */
 .close {
-    float: right;
-    margin-right: 6%;
+    position: absolute;
+    top: 2%;
+    right: 2%;
     font-size: 28px;
     font-weight: bold;
     display: block;

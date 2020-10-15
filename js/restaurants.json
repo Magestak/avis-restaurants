@@ -66,8 +66,8 @@
   {
     "restaurantName":"Gracia Michel",
     "address":"720 Chemin de Napoléon, 40990 Angoumé",
-    "lat":43.711834,
-    "long":-1.153443,
+    "lat":43.711645,
+    "long":-1.153599,
     "ratings":[
       {
         "stars":5,
@@ -80,10 +80,10 @@
     ]
   },
   {
-    "restaurantName":"Restaurant El Campo",
-    "address":"1011 Route de Constantine, 40990 Mées",
-    "lat":43.723978,
-    "long":-1.139230,
+    "restaurantName":"Hôtel de l'Océan",
+    "address":"1713 Avenue de l'Océan, 40990 Saint-Paul-lès-Dax",
+    "lat":43.724163,
+    "long":-1.105206,
     "ratings":[
       {
         "stars":5,

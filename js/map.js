@@ -119,8 +119,8 @@ class Map {
                     result[i].restaurantName,
                     result[i].address,
                     x,
-                    null,
                     result[i].ratings,);
+                console.log("RESTAURANT DANS GETJSON: ", restaurant);
                 restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                 restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
@@ -129,8 +129,9 @@ class Map {
         });
     }
     // TODO: 1- Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
-    // TODO: rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
-    // TODO: récup image google street view
+    // TODO: 2- rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
+    // TODO: 3- ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
+    // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
 }
 
 

@@ -23,7 +23,6 @@ class Comment {
         ajoutNomCommentaires.textContent = `Votre pseudo : ${that.name}`;
 
         // Récupère la note
-        // TODO: regarder le NaN
         let x = Math.floor(this.rating);
         let ajoutNoteCommentaires = document.createElement('div');
         ajoutNoteCommentaires.className = 'ajout-note-commentaires';
