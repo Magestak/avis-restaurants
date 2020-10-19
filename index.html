@@ -33,19 +33,22 @@
                     <h4 class="modal-title">Ajouter votre commentaire</h4>
                 </div>
 
-                <form class="w3-container" method="post">
+                <form class="w3-container">
                     <div class="w3-section">
                         <p>
                             <label for="pseudo-comment-modal-resto">Votre pseudo : </label>
-                            <input type="text" class="w3-input" name="pseudo" id="pseudo-comment-modal-resto" placeholder="Votre pseudo"/>
+                            <input type="text" class="w3-input" name="pseudo" id="pseudo-comment-modal-resto"
+                                   placeholder="Votre pseudo"/>
                         </p>
                         <p>
                             <label for="comment-modal-resto">Votre commentaire : </label>
-                            <input type="text" class="w3-input" name="comment" id="comment-modal-resto" placeholder="Votre commentaire" row="3" maxlength="150"/>
+                            <input type="text" class="w3-input" name="comment" id="comment-modal-resto"
+                                   placeholder="Votre commentaire" row="3" maxlength="150"/>
                         </p>
                         <p>
                             <label for="note-modal-resto">Votre note : </label>
-                            <input type="number" class="w3-input" name="note" id="note-modal-resto" placeholder="Votre note de 0 à 5" maxlength="1"/>
+                            <input type="number" class="w3-input" name="note" id="note-modal-resto"
+                                   placeholder="Votre note de 0 à 5" min="0" max="5" maxlength="1"/>
                         </p>
                         <button id="bouton-valid-modal-resto" class="w3-button" type="submit">Validez</button>
                     </div>
@@ -53,6 +56,8 @@
 
             </div>
         </div>
+
+
 
     </div>
 

@@ -120,7 +120,6 @@ class Map {
                     result[i].address,
                     x,
                     result[i].ratings,);
-                console.log("RESTAURANT DANS GETJSON: ", restaurant);
                 restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                 restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
@@ -132,6 +131,7 @@ class Map {
     // TODO: 2- rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
     // TODO: 3- ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
     // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
+    // TODO: 5- Voir problème d'arrêt du clic sur nom restau pour éviter duplication des comments en double
 }
 
 

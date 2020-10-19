@@ -130,6 +130,7 @@ class Restaurant {
         let boutonAjoutCommentResto = document.createElement('button');
         boutonAjoutCommentResto.className = 'bouton-ajout-comment-resto';
         boutonAjoutCommentResto.setAttribute("onclick", "document.getElementById('myModal').style.display='block'");
+        boutonAjoutCommentResto.textContent = "Ajouter un commentaire";
         boutonAjoutCommentResto.style.display = 'none';
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
@@ -147,6 +148,51 @@ class Restaurant {
 
             // Affiche les commentaires de l'API
             that.getComments();
+
+            // Affiche le bouton qui permet l' ajout de commentaire par l' utilisateur via l' ouverture d'une modal
+            boutonAjoutCommentResto.style.display = 'block';
+
+            document.body.querySelector('#bouton-valid-modal-resto').addEventListener('click', validationCommentaire);
+
+            // Fonction qui enregistre et insère les informations renseignées dans la modal, dans les commentaires
+            function validationCommentaire(e) {
+                e.preventDefault();
+                if(typeof sessionStorage !='undefined') {
+                    // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
+                    sessionStorage.setItem('pseudo-comment-modal-resto', document.getElementById('pseudo-comment-modal-resto').value);
+                    sessionStorage.setItem('comment-modal-resto', document.getElementById('comment-modal-resto').value);
+                    sessionStorage.setItem('note-modal-resto', document.getElementById('note-modal-resto').value);
+
+                    // On récupère les données stockées dans "session storage"
+                    let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
+                    let commentaire = sessionStorage.getItem("comment-modal-resto");
+                    let note = sessionStorage.getItem("note-modal-resto");
+
+                    // Création du nouveau commentaire avec les données recueillies
+                    let comment = new Comment(pseudo, note, commentaire, that.resultats);
+                    comment.initializeHtml();
+                    console.log("COMMENT DANS VALIDATION COMMENTAIRE: ", comment);
+
+                    // Si le commentaire existe, on masque le bouton d'ajout de commentaires pour cet utilisateur
+                    if (comment) {
+                        that.resultats.querySelector('.bouton-ajout-comment-resto').style.display = "none";
+                        // On vide le contenu de session storage
+                        sessionStorage.clear();
+                        // On réinitialise les valeurs des inputs
+                        document.getElementById('pseudo-comment-modal-resto').value = '';
+                        document.getElementById('comment-modal-resto').value = '';
+                        document.getElementById('note-modal-resto').value = '';
+                        // TODO: voir pour fermer la modal à la validation du comment et éviter l'ajout de commentaire vide
+                        document.body.querySelector('#bouton-valid-modal-resto').removeEventListener('click', validationCommentaire);
+
+                    }
+
+                } else {
+                    alert("sessionStorage n'est pas supporté");
+                }
+            }
+
+
 
 
 
@@ -173,10 +219,10 @@ class Restaurant {
         this.resultats.appendChild(etoileResto);
         this.resultats.appendChild(closeCommentResto);
         this.resultats.appendChild(addressResto);
+        this.resultats.appendChild(boutonAjoutCommentResto);
         this.resultats.appendChild(commentResto);
         this.resultats.appendChild(imageResto);
         this.resultats.appendChild(noteResto);
-        this.resultats.appendChild(boutonAjoutCommentResto);
         listRestaurants.appendChild(this.resultats);
 
     }
