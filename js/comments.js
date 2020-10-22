@@ -14,20 +14,16 @@ class Comment {
         let that = this;
         let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
         console.log("AJOUT COMMENTAIRES DANS COMMENT.JS: ", ajoutCommentaires);
-        ajoutCommentaires.removeAttribute("hidden");
 
         // Récupère le pseudo
         let ajoutNomCommentaires = document.createElement('div');
         ajoutNomCommentaires.className = 'ajout-nom-commentaires';
-        ajoutNomCommentaires.style.display = "block";
         ajoutNomCommentaires.textContent = `Votre pseudo : ${that.name}`;
 
         // Récupère la note
         let x = Math.floor(that.rating);
         let ajoutNoteCommentaires = document.createElement('div');
         ajoutNoteCommentaires.className = 'ajout-note-commentaires';
-        ajoutNoteCommentaires.textContent = "";
-        ajoutNoteCommentaires.style.display = "block";
         ajoutNoteCommentaires.textContent = `${x}`;
         ajoutNoteCommentaires.style.display = "none";
         let etoilesCommentaires = document.createElement('img');
@@ -42,7 +38,6 @@ class Comment {
         // Récupère le commentaire
         let ajoutCommentCommentaires = document.createElement('div');
         ajoutCommentCommentaires.className = 'ajout-comment-commentaires';
-        ajoutCommentCommentaires.style.display = "block";
         ajoutCommentCommentaires.textContent = `Votre commentaire : " ${that.comment} "`;
 
         // Insère les éléments crées dans le DOM
@@ -60,7 +55,7 @@ class Comment {
         let that = this;
         let ajoutCommentairesUser = document.createElement('div');
         ajoutCommentairesUser.className = 'ajout-commentaires-user';
-        console.log("AJOUT COMMENTAIRES DANS COMMENT.JS: ", ajoutCommentaires);
+        console.log("AJOUT COMMENTAIRES USER DANS COMMENT.JS: ", ajoutCommentairesUser);
 
         // Récupère le pseudo
         let ajoutNomCommentairesUser = document.createElement('div');
@@ -71,7 +66,6 @@ class Comment {
         let x = Math.floor(that.rating);
         let ajoutNoteCommentairesUser = document.createElement('div');
         ajoutNoteCommentairesUser.className = 'ajout-note-commentaires-user';
-        ajoutNoteCommentairesUser.textContent = "";
         ajoutNoteCommentairesUser.textContent = `${x}`;
         ajoutNoteCommentairesUser.style.display = "none";
         let etoilesCommentairesUser = document.createElement('img');
@@ -86,7 +80,6 @@ class Comment {
         // Récupère le commentaire
         let ajoutCommentCommentairesUser = document.createElement('div');
         ajoutCommentCommentairesUser.className = 'ajout-comment-commentaires-user';
-        ajoutCommentCommentairesUser.style.display = "block";
         ajoutCommentCommentairesUser.textContent = `Votre commentaire : " ${that.comment} "`;
 
         // Insère les éléments crées dans le DOM
