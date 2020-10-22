@@ -135,6 +135,8 @@ class Restaurant {
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
         nameResto.addEventListener('click', function (e) {
+            // TODO: voir pour effacer les commentaires si déjà présents?
+            //debugger;
             e.target.style.color = "#FC6354";
             that.resultats.style.backgroundColor = "#EFEEE4";
             that.resultats.style.height = "500px";
@@ -146,68 +148,97 @@ class Restaurant {
             // Affiche le bouton "close"
             closeCommentResto.style.display = 'block';
 
-            // Affiche les commentaires de l'API
+            // Affiche les commentaires venant du fichier json, ou venant de l'Api
             that.getComments();
 
             // Affiche le bouton qui permet l' ajout de commentaire par l' utilisateur via l' ouverture d'une modal
             boutonAjoutCommentResto.style.display = 'block';
 
-            document.body.querySelector('#bouton-valid-modal-resto').addEventListener('click', validationCommentaire);
+            // On écoute l'affichage du bouton d'ajout de commentaires
+            boutonAjoutCommentResto.addEventListener('click', function () {
+                // On récupère le formulaire "myModal" d'ajout de commentaires
+                let formCommentResto = document.getElementById("form-comment-resto");
 
-            // Fonction qui enregistre et insère les informations renseignées dans la modal, dans les commentaires
-            function validationCommentaire(e) {
-                e.preventDefault();
-                if(typeof sessionStorage !='undefined') {
-                    // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
-                    sessionStorage.setItem('pseudo-comment-modal-resto', document.getElementById('pseudo-comment-modal-resto').value);
-                    sessionStorage.setItem('comment-modal-resto', document.getElementById('comment-modal-resto').value);
-                    sessionStorage.setItem('note-modal-resto', document.getElementById('note-modal-resto').value);
+                // On s'assure que les "input" du formulaire sont remplis pour activer le bouton d'envoi
+                document.getElementById("pseudo-comment-modal-resto").addEventListener("change", verifInput);
+                document.getElementById("comment-modal-resto").addEventListener("change", verifInput);
+                document.getElementById("note-modal-resto").addEventListener("change", verifInput);
+                let boutonValidModalResto = document.getElementById('bouton-valid-modal-resto');
 
-                    // On récupère les données stockées dans "session storage"
-                    let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
-                    let commentaire = sessionStorage.getItem("comment-modal-resto");
-                    let note = sessionStorage.getItem("note-modal-resto");
+                // Si les "input" sont remplis, on active le bouton d'envoi du formulaire
+                function verifInput() {
+                    if ((formCommentResto.elements.pseudo.value !== "") &&
+                        (formCommentResto.elements.comment.value !== "") &&
+                        (formCommentResto.elements.note.value !== "")) {
+                        boutonValidModalResto.disabled = false;
+                    }
+                }
 
-                    // Création du nouveau commentaire avec les données recueillies
-                    let comment = new Comment(pseudo, note, commentaire, that.resultats);
-                    comment.initializeHtml();
-                    console.log("COMMENT DANS VALIDATION COMMENTAIRE: ", comment);
+                // On écoute l'évènement "submit" du formulaire d'ajout de commentaires pour un restaurant
+                formCommentResto.addEventListener("submit", function (event) {
+                    //debugger;
+                    event.preventDefault();
 
-                    // Si le commentaire existe, on masque le bouton d'ajout de commentaires pour cet utilisateur
-                    if (comment) {
-                        that.resultats.querySelector('.bouton-ajout-comment-resto').style.display = "none";
-                        // On vide le contenu de session storage
-                        sessionStorage.clear();
-                        // On réinitialise les valeurs des inputs
-                        document.getElementById('pseudo-comment-modal-resto').value = '';
-                        document.getElementById('comment-modal-resto').value = '';
-                        document.getElementById('note-modal-resto').value = '';
-                        // TODO: voir pour fermer la modal à la validation du comment et éviter l'ajout de commentaire vide
-                        document.body.querySelector('#bouton-valid-modal-resto').removeEventListener('click', validationCommentaire);
+                    if(typeof sessionStorage !='undefined') {
+                        // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
+                        sessionStorage.setItem('pseudo-comment-modal-resto', document.getElementById('pseudo-comment-modal-resto').value);
+                        sessionStorage.setItem('comment-modal-resto', document.getElementById('comment-modal-resto').value);
+                        sessionStorage.setItem('note-modal-resto', document.getElementById('note-modal-resto').value);
 
+                        // On récupère les données stockées dans "session storage"
+                        let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
+                        let commentaire = sessionStorage.getItem("comment-modal-resto");
+                        let note = sessionStorage.getItem("note-modal-resto");
+
+                        if ((pseudo !== "") && (commentaire !== "") && (note !== "")) {
+                            // Création du nouveau commentaire avec les données recueillies
+                            let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
+                            commentUser.initializeHtmlCommentUser();
+                            console.log("COMMENT DANS VALIDATION COMMENTAIRE: ", commentUser);
+
+                            // Si le commentaire existe, on masque le bouton d'ajout de commentaires pour cet utilisateur
+                            if (commentUser) {
+                                that.resultats.querySelector('.bouton-ajout-comment-resto').style.display = "none";
+
+                                // On réinitialise les valeurs des inputs
+                                formCommentResto.elements.pseudo.value = "";
+                                formCommentResto.elements.comment.value = "";
+                                formCommentResto.elements.note.value = "";
+
+                                // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire.
+                                boutonValidModalResto.disabled = true;
+
+                                // Ferme la modale à la validation du commentaire
+                                document.getElementById('myModal').style.display = "none";
+
+
+                            }
+                            // On vide le contenu de session storage
+                            sessionStorage.removeItem('pseudo-comment-modal-resto');
+                            sessionStorage.removeItem('comment-modal-resto');
+                            sessionStorage.removeItem('note-modal-resto');
+
+                        }
+
+
+                    } else {
+                        alert("sessionStorage n'est pas supporté");
                     }
 
-                } else {
-                    alert("sessionStorage n'est pas supporté");
-                }
-            }
 
 
-
-
+                });
+            })
 
             // Fonction qui masque les éléments qui étaient par défaut non visible.
             closeCommentResto.addEventListener('click', function() {
+                //debugger;
                 nameResto.style.color = "";
                 that.resultats.style.backgroundColor = '';
                 boutonAjoutCommentResto.style.display = "none";
                 that.resultats.style.height = "120px";
                 that.resultats.style.overflow = "hidden";
                 closeCommentResto.style.display = "none";
-                let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
-                ajoutCommentaires.setAttribute("hidden", true);
-                //ajoutCommentaires.style.display = 'none';
-                ajoutCommentaires.textContent = "";
             })
 
 
@@ -232,7 +263,11 @@ class Restaurant {
      * @return { object } Les commentaires correspondant aux restaurants
      */
     getComments() {
+        //debugger;
         let that = this;
+
+        let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
+        ajoutCommentaires.innerHTML = "";
 
         if (that.commentsJson) {
             that.commentsJson.forEach(function(comment) {
@@ -242,6 +277,7 @@ class Restaurant {
         } else {
             console.log("METHODE GET COMMENTS A FINIR :", );
         }
+
     }
 
     /**
