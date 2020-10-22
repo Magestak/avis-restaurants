@@ -132,9 +132,6 @@ class Map {
     // TODO: 3- ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
     // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
     // TODO: 5- Voir problème d'arrêt du clic sur nom restau pour éviter duplication des comments en double
-    // TODO: sécuriser les formulaires "modal" (type de données saisies, etc)
-    // TODO: voir bug soumission à vide du formulaire qui empèche ensuite de rajouter un commentaire sur d'autre restos
-    // TODO: voir bug ouverture autre resto si déjà 1 d'ouvert
 }
 
 
