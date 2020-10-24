@@ -44,7 +44,8 @@ class Restaurant {
         });
         let marqueur = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
         marqueur.bindPopup(titleInfo);
-}
+    }
+
     /**
      * Crée la liste des restaurants affichés sur le côté de la map
      */

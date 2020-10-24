@@ -12,7 +12,7 @@ class Map {
             lng: this.positionDefault.lng
         };
         this.marqueurUser = {}; // Le marqueur de la position géolocalisée de l'utilisateur
-
+        this.restaurants = []; // La liste des restaurants
     }
 
     /**
@@ -51,11 +51,18 @@ class Map {
             that.coordsFromBrowser.lat = position.coords.latitude;
             that.coordsFromBrowser.lng = position.coords.longitude;
 
-            that.maCarte.setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 13);
+            that.maCarte.setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 14);
 
             // On insère un marqueur sur la position de l'utilisateur
-            that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser}).addTo(that.maCarte);
-            that.marqueurUser.bindPopup("<p>Vous êtes ici</p>");
+            that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng),
+                {draggable:'true'}, {icon: iconUser}).bindPopup("Vous êtes ici !").addTo(that.maCarte);
+
+            // On rend le marqueur draggable
+            that.marqueurUser.on('dragend', relachement);
+            function relachement(e) {
+                that.marqueurUser.getPopup().setContent(''+ that.marqueurUser.getLatLng());
+                that.marqueurUser.openPopup();
+            }
         }
 
         /**
@@ -66,6 +73,7 @@ class Map {
             switch(error.code) {
                 case error.PERMISSION_DENIED:
                     confirm("User denied the request for Geolocation.")
+                    // TODO: voir pour mettre le draggable sur marqueur par défaut sur Paris, comme pour position user
                     that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser}).addTo(that.maCarte);
                     that.marqueurUser.bindPopup("<p>Position par défaut</p>");
                     break;
@@ -82,7 +90,7 @@ class Map {
         }
 
         // On initialise la carte
-        this.maCarte = L.map('map').setView([this.coordsFromBrowser.lat, this.coordsFromBrowser.lng], 13);
+        this.maCarte = L.map('map').setView([this.coordsFromBrowser.lat, this.coordsFromBrowser.lng], 14);
 
         // On charge les "tuiles"
         L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
@@ -93,7 +101,6 @@ class Map {
 
         // Appelle la méthode pour intégrer les restaurants du fichier JSON à la map.
         this.getJson("../js/restaurants.json");
-
     }
 
     /**
@@ -123,15 +130,50 @@ class Map {
                 restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                 restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
-            }
+                // On récupère les restaurants crées
+                that.restaurants.push(restaurant);
 
+            }
+            that.onlyVisibleRestaurants();
         });
     }
+
+    /**
+     * Affiche la liste des restaurants uniquement visibles sur la carte
+     */
+    onlyVisibleRestaurants() {
+        let that = this;
+        that.restaurants.forEach(restaurant => {
+            if (!(that.maCarte.getBounds().contains(restaurant.location))) {
+                restaurant.resultats.style.display = "none";
+            }
+        })
+    }
+
+    /*
+    getFeaturesInView() {
+        let that = this;
+        let features = [];
+        that.maCarte.eachLayer( function(layer) {
+            if(layer instanceof L.Marker) {
+                if(that.maCarte.getBounds().contains(layer.getLatLng())) {
+                    features.push(layer.feature);
+                }
+            }
+        });
+        return features;
+    }
+    */
+
+
     // TODO: 1- Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
     // TODO: 2- rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
     // TODO: 3- ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
     // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
-    // TODO: 5- Voir problème d'arrêt du clic sur nom restau pour éviter duplication des comments en double
+    // TODO: 5- Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
+    // TODO: 6- Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
+    // TODO: voir pour actualisation de la carte et de la liste des restos quand on bouge la map et/ou le marker user?
+    // TODO: enlever position par défautb au départ pour éviter le chargement des restos de paris dans la liste.
 }
 
 
