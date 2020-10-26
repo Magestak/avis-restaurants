@@ -9,8 +9,8 @@
 
 /************** Carte *****************/
 #map {
-    width: auto;
-    height: 800px;
+    width: 100vw;
+    height: 100vh; /* ou 800px ?*/
     z-index: 1;
 }
 /************* Résultats **************/

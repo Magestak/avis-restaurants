@@ -21,12 +21,13 @@ class Map {
     initMap() {
         let that = this;
 
-        // On récupère la latitude et la longitude de la position de l'utilisateur et on gère les erreurs
+        // On récupère la latitude et la longitude de la position de l'utilisateur et on gère les erreurs si nécessaire
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else {
             confirm("Geolocation is not supported by this browser.");
-            this.marqueurUser = L.marker(L.latLng(this.coordsFromBrowser.lat, this.coordsFromBrowser.lng)).addTo(this.maCarte);
+            //this.marqueurUser = L.marker(L.latLng(this.coordsFromBrowser.lat, this.coordsFromBrowser.lng)).addTo(this.maCarte);
+            this.marqueurUser = L.marker(L.latLng(this.positionDefault.lat, this.positionDefault.lng)).addTo(this.maCarte);
         }
 
         // On crée un icône personnalisé pour la librairie leaflet qui sera utilisé pour marquer la position de l'utilisateur
@@ -54,15 +55,12 @@ class Map {
             that.maCarte.setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 14);
 
             // On insère un marqueur sur la position de l'utilisateur
-            that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng),
-                {draggable:'true'}, {icon: iconUser}).bindPopup("Vous êtes ici !").addTo(that.maCarte);
+            that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
+                ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
 
-            // On rend le marqueur draggable
-            that.marqueurUser.on('dragend', relachement);
-            function relachement(e) {
-                that.marqueurUser.getPopup().setContent(''+ that.marqueurUser.getLatLng());
-                that.marqueurUser.openPopup();
-            }
+            // Appelle la méthode pour intégrer les restaurants du fichier JSON à la map.
+            //that.getJson("../js/restaurants.json");
+
         }
 
         /**
@@ -74,8 +72,9 @@ class Map {
                 case error.PERMISSION_DENIED:
                     confirm("User denied the request for Geolocation.")
                     // TODO: voir pour mettre le draggable sur marqueur par défaut sur Paris, comme pour position user
-                    that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser}).addTo(that.maCarte);
+                    that.marqueurUser = L.marker(L.latLng(that.positionDefault.lat, that.positionDefault.lng), {icon: iconUser}).addTo(that.maCarte);
                     that.marqueurUser.bindPopup("<p>Position par défaut</p>");
+                    that.getJson("../js/restaurants.json");
                     break;
                 case error.POSITION_UNAVAILABLE:
                     confirm("Location information is unavailable.")
@@ -90,7 +89,7 @@ class Map {
         }
 
         // On initialise la carte
-        this.maCarte = L.map('map').setView([this.coordsFromBrowser.lat, this.coordsFromBrowser.lng], 14);
+        this.maCarte = L.map('map').setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 14);
 
         // On charge les "tuiles"
         L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
@@ -99,8 +98,11 @@ class Map {
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.maCarte);
 
-        // Appelle la méthode pour intégrer les restaurants du fichier JSON à la map.
-        this.getJson("../js/restaurants.json");
+        //////////////////////////
+
+
+
+        //////////////////////////
     }
 
     /**
@@ -132,8 +134,8 @@ class Map {
 
                 // On récupère les restaurants crées
                 that.restaurants.push(restaurant);
-
             }
+            // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
             that.onlyVisibleRestaurants();
         });
     }
@@ -150,21 +152,17 @@ class Map {
         })
     }
 
-    /*
-    getFeaturesInView() {
+    /**
+     * Met à jour la liste des restaurants sur le côté de la map, à chaque mouvement de la carte
+     */
+    restaurantUpdate() {
         let that = this;
-        let features = [];
-        that.maCarte.eachLayer( function(layer) {
-            if(layer instanceof L.Marker) {
-                if(that.maCarte.getBounds().contains(layer.getLatLng())) {
-                    features.push(layer.feature);
-                }
-            }
+        this.maCarte.on('moveend', function() {
+            let listRestaurants = document.getElementById('restaurants-list');
+            listRestaurants.innerHTML = "";
+            that.getJson("../js/restaurants.json");
         });
-        return features;
     }
-    */
-
 
     // TODO: 1- Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
     // TODO: 2- rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
@@ -172,8 +170,6 @@ class Map {
     // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
     // TODO: 5- Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
     // TODO: 6- Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
-    // TODO: voir pour actualisation de la carte et de la liste des restos quand on bouge la map et/ou le marker user?
-    // TODO: enlever position par défautb au départ pour éviter le chargement des restos de paris dans la liste.
 }
 
 
