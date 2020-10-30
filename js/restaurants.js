@@ -84,7 +84,6 @@ class Restaurant {
         else if (x === 5) {etoileResto.src = "../img/5_stars.png";}
         else {etoileResto.src = "../img/0_star.png";}
 
-        // TODO: voir si sa place n'est pas plutôt dans getComments et si oui comment l'insérer dans "résultats" à la bonne place.
         // Crée une <div> pour les commentaires
         let commentResto = document.createElement('div');
         commentResto.className = 'comment-resto';
@@ -136,6 +135,7 @@ class Restaurant {
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
         nameResto.addEventListener('click', function (e) {
+            // TODO: voir si possible avec un "if" de fermer le resto éventuellement ouvert
             e.target.style.color = "#FC6354";
             that.resultats.style.backgroundColor = "#EFEEE4";
             that.resultats.style.height = "500px";

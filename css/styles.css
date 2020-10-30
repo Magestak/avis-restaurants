@@ -10,7 +10,7 @@
 /************** Carte *****************/
 #map {
     width: 100vw;
-    height: 100vh; /* ou 800px ?*/
+    height: 90vh; /* ou 800px ?*/
     z-index: 1;
 }
 /************* Résultats **************/

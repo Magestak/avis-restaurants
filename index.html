@@ -10,22 +10,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
-
-    <!-- Load Esri Leaflet from CDN -->
-    <script src="https://unpkg.com/esri-leaflet@2.5.1/dist/esri-leaflet.js"
-            integrity="sha512-q7X96AASUF0hol5Ih7AeZpRF6smJS55lcvy+GLWzJfZN+31/BQ8cgNx2FGF+IQSA4z2jHwB20vml+drmooqzzQ=="
-            crossorigin=""></script>
-
-    <!-- Load Esri Leaflet Geocoder from CDN -->
-    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.css"
-          integrity="sha512-IM3Hs+feyi40yZhDH6kV8vQMg4Fh20s9OzInIIAc4nx7aMYMfo+IenRUekoYsHZqGkREUgx0VvlEsgm7nCDW9g=="
-          crossorigin="">
-    <script src="https://unpkg.com/esri-leaflet-geocoder@2.3.3/dist/esri-leaflet-geocoder.js"
-            integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
-            crossorigin=""></script>
 </head>
 <body>
 <!-- Wrapper -->
@@ -33,6 +17,43 @@
     <div class="w3-row">
         <!-- Colonne de gauche avec les restaurants -->
         <div class="w3-bar-block w3-col w3-left" style="width: 30%">
+            <div class="w3-container">
+                <h2>Site d'avis sur des restaurants par géolocalisation</h2>
+            </div>
+            <div>
+                <h3>Filtrer les restaurants par nombre d'étoiles</h3>
+                <div class="w3-row">
+                    <div class="w3-col" style="width: 50%">
+                        <div class="w3-center">
+                            <label for="etoiles-mini">Nombre d'étoiles minimum: </label>
+                        </div>
+                        <div class="w3-center">
+                            <select name="etoiles-mini" id="etoiles-mini">
+                                <option value="1" selected> 1 étoile </option>
+                                <option value="2"> 2 étoiles </option>
+                                <option value="3"> 3 étoiles</option>
+                                <option value="4"> 4 étoiles</option>
+                                <option value="5"> 5 étoiles </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="w3-col" style="width: 50%">
+                        <div class="w3-center">
+                            <label for="etoiles-maxi">Nombre d'étoiles maximum: </label>
+                        </div>
+                        <div class="w3-center">
+                            <select name="etoiles-maxi" id="etoiles-maxi">
+                                <option value="1"> 1 étoile </option>
+                                <option value="2"> 2 étoiles </option>
+                                <option value="3"> 3 étoiles</option>
+                                <option value="4"> 4 étoiles</option>
+                                <option value="5" selected> 5 étoiles </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="restaurants-list">
 
             </div>
@@ -78,6 +99,7 @@
 
     </div>
 
+    <!-- Pour la récupération des commentaires des restaurants -->
     <div class="ajout-commentaires">
 
     </div>
@@ -96,6 +118,11 @@
         </p>
     </div>
 </footer>
+
+<!-- Load Leaflet from CDN -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
 <script src="js/jquery.js"></script>

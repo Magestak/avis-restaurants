@@ -58,9 +58,6 @@ class Map {
             that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
                 ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
 
-            // Appelle la méthode pour intégrer les restaurants du fichier JSON à la map.
-            //that.getJson("../js/restaurants.json");
-
         }
 
         /**
@@ -98,11 +95,10 @@ class Map {
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.maCarte);
 
-        //////////////////////////
 
+        ////////////////////////////////////////
 
-
-        //////////////////////////
+        ////////////////////////////////
     }
 
     /**
@@ -137,6 +133,7 @@ class Map {
             }
             // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
             that.onlyVisibleRestaurants();
+
         });
     }
 
@@ -149,6 +146,7 @@ class Map {
             if (!(that.maCarte.getBounds().contains(restaurant.location))) {
                 restaurant.resultats.style.display = "none";
             }
+            that.filterRestaurants(restaurant);
         })
     }
 
@@ -161,15 +159,46 @@ class Map {
             let listRestaurants = document.getElementById('restaurants-list');
             listRestaurants.innerHTML = "";
             that.getJson("../js/restaurants.json");
+
         });
     }
 
-    // TODO: 1- Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
-    // TODO: 2- rajouter la méthode de geocoding pour localisation des restaurants autour de sa position
-    // TODO: 3- ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
-    // TODO: 4- ajouter affichage du restaurant au clic du marker sur la map
-    // TODO: 5- Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
-    // TODO: 6- Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
+    /**
+     * Ecoute et applique le filtre sur les restaurants demandé par l'utilisateur
+     */
+    filterRestaurants(restaurant) {
+        let that = this;
+        let starsMin = document.getElementById('etoiles-mini');
+        let starsMax = document.getElementById('etoiles-maxi');
+
+        starsMin.addEventListener('change', userChoice);
+        starsMax.addEventListener('change', userChoice);
+
+
+        function userChoice() {
+            let choiceMinUser = parseInt(starsMin.value);
+            let choiceMaxUser = parseInt(starsMax.value);
+
+            if (restaurant.rating < choiceMinUser || restaurant.rating > choiceMaxUser) {
+                restaurant.resultats.style.display = 'none';
+                // TODO: méthode pour supprimer le marqueur ?
+            } else {
+                restaurant.resultats.style.display = 'block';
+            }
+            if (!(that.maCarte.getBounds().contains(restaurant.location))) {
+                restaurant.resultats.style.display = "none";
+            }
+
+        }
+    }
+
+
+    // TODO: Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
+    // TODO: ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
+    // TODO: ajouter affichage du restaurant au clic du marker sur la map (onMapClick + modal new)
+    // TODO: Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
+    // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
+    // TODO: Installer une barre de recherche???
 }
 
 
