@@ -13,7 +13,6 @@ class Comment {
     initializeHtml() {
         let that = this;
         let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
-        console.log("AJOUT COMMENTAIRES DANS COMMENT.JS: ", ajoutCommentaires);
 
         // Récupère le pseudo
         let ajoutNomCommentaires = document.createElement('div');

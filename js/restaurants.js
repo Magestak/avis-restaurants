@@ -195,7 +195,6 @@ class Restaurant {
                         if ((pseudo !== "") && (commentaire !== "") && (note !== "")) {
                             let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
                             commentUser.initializeHtmlCommentUser();
-                            console.log("COMMENT DANS VALIDATION COMMENTAIRE: ", commentUser);
 
                             // Si le commentaire existe
                             if (commentUser) {

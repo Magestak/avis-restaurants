@@ -95,7 +95,38 @@
             </div>
         </div>
 
+        <!-- Modal ajout de restaurant -->
+        <div id="myModal1" class="w3-modal">
+            <div class="w3-modal-content w3-card-4 w3-animate-zoom">
 
+                <div class="w3-center modal-header"><br>
+                    <span onclick="document.getElementById('myModal1').style.display='none'" class="w3-button w3-xlarge w3-hover-red w3-display-topright" title="Close Modal">&times;</span>
+                    <h4 class="modal-title">Ajouter un restaurant</h4>
+                </div>
+
+                <form id="form-resto" class="w3-container">
+                    <div class="w3-section">
+                        <p>
+                            <label for="nom-modal1-resto">Nom du restaurant : </label>
+                            <input type="text" class="w3-input" name="nom" id="nom-modal1-resto"
+                                   placeholder="Nom" required/>
+                        </p>
+                        <p>
+                            <label for="address-modal1-resto">Adresse du restaurant: </label>
+                            <input type="text" class="w3-input" name="address" id="address-modal1-resto"
+                                   placeholder="Adresse" row="3" maxlength="150" required/>
+                        </p>
+                        <p>
+                            <label for="note-modal1-resto">Votre note : </label>
+                            <input type="number" class="w3-input" name="note" id="note-modal1-resto"
+                                   placeholder="Votre note de 0 à 5" min="0" max="5" maxlength="1" required/>
+                        </p>
+                        <button id="bouton-valid-modal1-resto" class="w3-button" type="submit" disabled>Validez</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
 
     </div>
 

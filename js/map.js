@@ -58,6 +58,9 @@ class Map {
             that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
                 ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
 
+            // Méthode pour ajouter un nouveau restaurant
+            that.addRestaurant();
+
         }
 
         /**
@@ -95,10 +98,6 @@ class Map {
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.maCarte);
 
-
-        ////////////////////////////////////////
-
-        ////////////////////////////////
     }
 
     /**
@@ -192,12 +191,107 @@ class Map {
         }
     }
 
+    /**
+     * Ajoute de nouveaux restaurants sur la map
+     */
+    addRestaurant() {
+        let that = this;
+        that.maCarte.on('click', function (e) {
+            let coordNewResto = e.latlng;
+
+            // On ouvre la modale d'ajout de restaurant
+            document.getElementById('myModal1').style.display = "block";
+
+            // On récupère le bouton d'envoi du formulaire
+            let boutonValidModal1Resto = document.getElementById('bouton-valid-modal1-resto');
+
+            // On récupère le formulaire
+            let formResto = document.getElementById('form-resto');
+
+            // Pour activer le bouton d'envoi du formulaire, on s'assure que les input sont bien remplis
+            formResto.nom.addEventListener('change', verifInput);
+            formResto.address.addEventListener('change', verifInput);
+            formResto.note.addEventListener('change', verifInput);
+
+            function verifInput() {
+                if ((formResto.nom.value !== '')&&
+                    (formResto.address.value !== '') &&
+                    (formResto.note.value !== '')) {
+                    boutonValidModal1Resto.disabled = false;
+                }
+            }
+
+            // On écoute la validation du bouton d'envoi du formulaire
+            boutonValidModal1Resto.addEventListener('click', function (event) {
+                // On bloque l'envoi du formulaire
+                event.preventDefault();
+
+                // On utilise sessionStorage pour stocker la création du nouveau resto le temps de la visite
+                if(typeof sessionStorage !='undefined') {
+                    // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
+                    sessionStorage.setItem('nom-modal1-resto', document.getElementById('nom-modal1-resto').value);
+                    sessionStorage.setItem('address-modal1-resto', document.getElementById('address-modal1-resto').value);
+                    sessionStorage.setItem('note-modal1-resto', document.getElementById('note-modal1-resto').value);
+
+                    // On récupère les données stockées dans "session storage"
+                    let nomNouveauResto = sessionStorage.getItem("nom-modal1-resto");
+                    let adresseNouveauResto = sessionStorage.getItem("address-modal1-resto");
+                    let noteNouveauResto = sessionStorage.getItem("note-modal1-resto");
+
+                    // Création du nouveau commentaire avec les données recueillies
+                    if ((nomNouveauResto !== "") && (adresseNouveauResto !== "") && (noteNouveauResto !== "")) {
+                        // Création d'une instance de la classe restaurant
+                        let nouveauRestaurant = new Restaurant(that.maCarte,
+                            null,
+                            null,
+                            L.latLng(coordNewResto.lat, coordNewResto.lng),
+                            nomNouveauResto,
+                            adresseNouveauResto,
+                            noteNouveauResto,
+                            null);
+                        console.log("NEW RESTO: ", nouveauRestaurant);
+                        nouveauRestaurant.createMarker(); // Crée un marqueur pour chaque restaurant
+                        nouveauRestaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
+
+                        // On ajoute le restaurants crée à la liste des restaurants
+                        that.restaurants.push(nouveauRestaurant);
+                        console.log("THAT RESTAURANTS: ", that.restaurants);
+
+
+                        // Si le nouveau restaurant est crée
+                        if (nouveauRestaurant) {
+                            // On vide le contenu de session storage
+                            sessionStorage.removeItem('nom-modal1-resto');
+                            sessionStorage.removeItem('address-modal1-resto');
+                            sessionStorage.removeItem('note-modal1-resto');
+
+                            // On réinitialise les valeurs des input
+                            document.getElementById('nom-modal1-resto').value = '';
+                            document.getElementById('address-modal1-resto').value = '';
+                            document.getElementById('note-modal1-resto').value = '';
+
+                            // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
+                            boutonValidModal1Resto.disabled = true;
+
+                            // On ferme la modale
+                            document.getElementById('myModal1').style.display = "none";
+                        }
+                    }
+                } else {
+                    alert("sessionStorage n'est pas supporté");
+                }
+            })
+        })
+
+    }
+
 
     // TODO: Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
     // TODO: ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
     // TODO: ajouter affichage du restaurant au clic du marker sur la map (onMapClick + modal new)
     // TODO: Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
+    // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
     // TODO: Installer une barre de recherche???
 }
 
