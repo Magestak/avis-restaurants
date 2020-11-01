@@ -14,6 +14,7 @@ class Comment {
         let that = this;
         let ajoutCommentaires = document.body.querySelector('.ajout-commentaires');
 
+
         // Récupère le pseudo
         let ajoutNomCommentaires = document.createElement('div');
         ajoutNomCommentaires.className = 'ajout-nom-commentaires';
@@ -54,7 +55,7 @@ class Comment {
         let that = this;
         let ajoutCommentairesUser = document.createElement('div');
         ajoutCommentairesUser.className = 'ajout-commentaires-user';
-        console.log("AJOUT COMMENTAIRES USER DANS COMMENT.JS: ", ajoutCommentairesUser);
+
 
         // Récupère le pseudo
         let ajoutNomCommentairesUser = document.createElement('div');

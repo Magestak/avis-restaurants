@@ -58,9 +58,6 @@ class Map {
             that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
                 ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
 
-            // Méthode pour ajouter un nouveau restaurant
-            that.addRestaurant();
-
         }
 
         /**
@@ -74,7 +71,6 @@ class Map {
                     // TODO: voir pour mettre le draggable sur marqueur par défaut sur Paris, comme pour position user
                     that.marqueurUser = L.marker(L.latLng(that.positionDefault.lat, that.positionDefault.lng), {icon: iconUser}).addTo(that.maCarte);
                     that.marqueurUser.bindPopup("<p>Position par défaut</p>");
-                    that.getJson("../js/restaurants.json");
                     break;
                 case error.POSITION_UNAVAILABLE:
                     confirm("Location information is unavailable.")
@@ -97,6 +93,15 @@ class Map {
             maxZoom: 20,
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.maCarte);
+
+        // On charge les restaurants du fichier json
+        that.getJson("../js/restaurants.json");
+
+        // On met à jour la liste des restaurants sur le côté en fonction de la map visible
+        that.restaurantUpdate();
+
+        // Méthode pour ajouter un nouveau restaurant
+        that.addRestaurant();
 
     }
 
@@ -142,10 +147,15 @@ class Map {
     onlyVisibleRestaurants() {
         let that = this;
         that.restaurants.forEach(restaurant => {
+            // Filtre les restaurants selon le choix utilisateur
+            that.filterRestaurants(restaurant);
+
+            // Affiche uniquement sur le côté de la map les restaurants visibles sur la map
             if (!(that.maCarte.getBounds().contains(restaurant.location))) {
                 restaurant.resultats.style.display = "none";
+            } else {
+                restaurant.resultats.style.display = "block";
             }
-            that.filterRestaurants(restaurant);
         })
     }
 
@@ -155,10 +165,8 @@ class Map {
     restaurantUpdate() {
         let that = this;
         this.maCarte.on('moveend', function() {
-            let listRestaurants = document.getElementById('restaurants-list');
-            listRestaurants.innerHTML = "";
-            that.getJson("../js/restaurants.json");
-
+            // TODO: voir pour garder valeur des select avant mouvement
+            that.onlyVisibleRestaurants();
         });
     }
 
@@ -197,7 +205,10 @@ class Map {
     addRestaurant() {
         let that = this;
         that.maCarte.on('click', function (e) {
+            //debugger;
             let coordNewResto = e.latlng;
+
+            console.log("COORD NEW RESTO: ", coordNewResto);
 
             // On ouvre la modale d'ajout de restaurant
             document.getElementById('myModal1').style.display = "block";
@@ -222,7 +233,7 @@ class Map {
             }
 
             // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModal1Resto.addEventListener('click', function (event) {
+            boutonValidModal1Resto.addEventListener('click', function(event) {
                 // On bloque l'envoi du formulaire
                 event.preventDefault();
 
@@ -287,11 +298,11 @@ class Map {
 
 
     // TODO: Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
-    // TODO: ajouter outil de filtre sur étoiles de restaurant dans une barre menu en haut de la page
     // TODO: ajouter affichage du restaurant au clic du marker sur la map (onMapClick + modal new)
     // TODO: Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
     // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
+    // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
     // TODO: Installer une barre de recherche???
 }
 
