@@ -97,6 +97,9 @@ class Map {
         // On charge les restaurants du fichier json
         that.getJson("../js/restaurants.json");
 
+        // On charge les restaurants de l'api google places
+        that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=43.7682176,-1.179648&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
+
         // On met à jour la liste des restaurants sur le côté en fonction de la map visible
         that.restaurantUpdate();
 
@@ -106,10 +109,10 @@ class Map {
     }
 
     /**
-     * Requète vers le fichier json
+     * Récupère les restaurants du fichier json
      * @param { string } url    // L'url de la requète
      */
-    getJson (url) {
+    getJson(url) {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(url, function (results) {
@@ -135,6 +138,39 @@ class Map {
                 // On récupère les restaurants crées
                 that.restaurants.push(restaurant);
             }
+            // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
+            that.onlyVisibleRestaurants();
+
+        });
+    }
+
+    /**
+     * Récupère les restaurants provenant de l'api google places
+     * @param { string } url    // L'url de la requète
+     */
+    getPlaces(url) {
+        let that = this;
+        // Utilisation de la fonction XHR "ajaxGet"
+        ajaxGet(url, function (results) {
+            let result = JSON.parse(results);
+            for (let i =0; i < result.results.length; i++) {
+                // Création d'une instance de la classe restaurant
+                let restaurant = new Restaurant(that.maCarte,
+                    null,
+                    result.results[i].place_id,
+                    L.latLng(result.results[i].geometry.location.lat, result.results[i].geometry.location.lng),
+                    result.results[i].name,
+                    result.results[i].vicinity,
+                    Math.round(result.results[i].rating),
+                    );
+                restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
+                restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
+
+                // On récupère les restaurants crées
+                that.restaurants.push(restaurant);
+            }
+            console.log("THAT RESTAURANTS: ", that.restaurants);
+
             // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
             that.onlyVisibleRestaurants();
 
@@ -303,6 +339,7 @@ class Map {
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
     // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
     // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
+    // TODO: Empêcher ajout d'un 2ème resto sans marqueur
     // TODO: Installer une barre de recherche???
 }
 
