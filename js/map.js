@@ -6,7 +6,7 @@ class Map {
      */
     constructor() {
         this.maCarte = {}; // La carte
-        this.positionDefault = { lat: 48.8534, lng: 2.3488}; //Position par défaut = Paris
+        this.positionDefault = {lat: 48.8534, lng: 2.3488}; //Position par défaut = Paris
         this.coordsFromBrowser = {
             lat: this.positionDefault.lat,
             lng: this.positionDefault.lng
@@ -56,7 +56,9 @@ class Map {
 
             // On insère un marqueur sur la position de l'utilisateur
             that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
-                ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
+            ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
+
+            that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + that.coordsFromBrowser.lat + "," + that.coordsFromBrowser.lng + "&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
 
         }
 
@@ -65,7 +67,7 @@ class Map {
          * @param { number } error
          */
         function showError(error) {
-            switch(error.code) {
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
                     confirm("User denied the request for Geolocation.")
                     // TODO: voir pour mettre le draggable sur marqueur par défaut sur Paris, comme pour position user
@@ -98,7 +100,16 @@ class Map {
         that.getJson("../js/restaurants.json");
 
         // On charge les restaurants de l'api google places
-        that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=43.7682176,-1.179648&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
+        // TODO: voir pour changer location dans la requète avec getBounds?? ou marqueur draggable??
+        let limitesCarte = that.maCarte.getBounds(); // TEST
+        console.log("GET BOUNDS: ", limitesCarte); // TEST
+        // limitesCarte._southWest.lng // sud
+        // limitesCarte._southWest.lat // ouest
+        // limitesCarte._northEast.lng // nord
+        // limitesCarte._northEast.lat // est
+        //that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?locationbias=rectangle:"+limitesCarte._southWest.lng+","+limitesCarte._southWest.lat+"|"+limitesCarte._northEast.lng+","+limitesCarte._northEast.lat+"&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
+        //that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+that.coordsFromBrowser.lat+","+that.coordsFromBrowser.lng+"&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
+
 
         // On met à jour la liste des restaurants sur le côté en fonction de la map visible
         that.restaurantUpdate();
@@ -117,7 +128,7 @@ class Map {
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(url, function (results) {
             let result = JSON.parse(results);
-            for (let i =0; i < result.length; i++) {
+            for (let i = 0; i < result.length; i++) {
                 let num1 = result[i].ratings[0].stars;
                 let num2 = result[i].ratings[1].stars;
                 let somme = num1 + num2;
@@ -125,7 +136,6 @@ class Map {
 
                 // Création d'une instance de la classe restaurant
                 let restaurant = new Restaurant(that.maCarte,
-                    null,
                     null,
                     L.latLng(result[i].lat, result[i].long),
                     result[i].restaurantName,
@@ -153,16 +163,16 @@ class Map {
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(url, function (results) {
             let result = JSON.parse(results);
-            for (let i =0; i < result.results.length; i++) {
+            for (let i = 0; i < result.results.length; i++) {
                 // Création d'une instance de la classe restaurant
                 let restaurant = new Restaurant(that.maCarte,
-                    null,
                     result.results[i].place_id,
                     L.latLng(result.results[i].geometry.location.lat, result.results[i].geometry.location.lng),
                     result.results[i].name,
                     result.results[i].vicinity,
                     Math.round(result.results[i].rating),
-                    );
+                    null,
+                );
                 restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                 restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
@@ -200,7 +210,7 @@ class Map {
      */
     restaurantUpdate() {
         let that = this;
-        this.maCarte.on('moveend', function() {
+        this.maCarte.on('moveend', function () {
             // TODO: voir pour garder valeur des select avant mouvement
             that.onlyVisibleRestaurants();
         });
@@ -261,7 +271,7 @@ class Map {
             formResto.note.addEventListener('change', verifInput);
 
             function verifInput() {
-                if ((formResto.nom.value !== '')&&
+                if ((formResto.nom.value !== '') &&
                     (formResto.address.value !== '') &&
                     (formResto.note.value !== '')) {
                     boutonValidModal1Resto.disabled = false;
@@ -269,12 +279,12 @@ class Map {
             }
 
             // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModal1Resto.addEventListener('click', function(event) {
+            boutonValidModal1Resto.addEventListener('click', function (event) {
                 // On bloque l'envoi du formulaire
                 event.preventDefault();
 
                 // On utilise sessionStorage pour stocker la création du nouveau resto le temps de la visite
-                if(typeof sessionStorage !='undefined') {
+                if (typeof sessionStorage != 'undefined') {
                     // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
                     sessionStorage.setItem('nom-modal1-resto', document.getElementById('nom-modal1-resto').value);
                     sessionStorage.setItem('address-modal1-resto', document.getElementById('address-modal1-resto').value);
@@ -289,7 +299,6 @@ class Map {
                     if ((nomNouveauResto !== "") && (adresseNouveauResto !== "") && (noteNouveauResto !== "")) {
                         // Création d'une instance de la classe restaurant
                         let nouveauRestaurant = new Restaurant(that.maCarte,
-                            null,
                             null,
                             L.latLng(coordNewResto.lat, coordNewResto.lng),
                             nomNouveauResto,
@@ -334,13 +343,12 @@ class Map {
 
 
     // TODO: Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
-    // TODO: ajouter affichage du restaurant au clic du marker sur la map (onMapClick + modal new)
     // TODO: Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
     // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
     // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
     // TODO: Empêcher ajout d'un 2ème resto sans marqueur
-    // TODO: Installer une barre de recherche???
+    // TODO: barre de recherche??
 }
 
 

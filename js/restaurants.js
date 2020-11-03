@@ -2,17 +2,15 @@ class Restaurant {
     /**
      * Classe correspondant aux restaurants
      * @param { object } maCarte        // La map
-     * @param { object } service        // Les services de l'API
      * @param { number } id             // L'identifiant du restaurant
      * @param { object } location       // La latitude et la longitude du restaurant
      * @param { string } name           // Le nom du restaurant
      * @param { string } address        // L'adresse du restaurant
      * @param { number } rating         // La note moyenne du restaurant
-     * @param { object } commentsJson   // Indique si le restaurant est à prendre dans la base JSON ou dans l'API
+     * @param { object } commentsJson   // Indique si les commentaires sont à prendre dans la base JSON ou dans l'API
      */
-    constructor(maCarte, service, id, location, name, address, rating, commentsJson) {
+    constructor(maCarte, id, location, name, address, rating, commentsJson) {
         this.maCarte = maCarte;
-        this.service = service;
         this.id = id;
         this.location = location;
         this.name = name;
@@ -88,28 +86,6 @@ class Restaurant {
         let commentResto = document.createElement('div');
         commentResto.className = 'comment-resto';
         commentResto.style.display = 'none';
-
-        // Crée les différents éléments de la <div> commentaires
-        let commentInfoResto = document.createElement('p');
-        commentInfoResto.className = 'comment-info-resto';
-        let commentAuteurResto = document.createElement('p');
-        commentAuteurResto.className = 'comment-auteur-resto';
-        let commentaireResto = document.createElement('p');
-        commentaireResto.className = 'comment-class-resto';
-        let commentDateResto = document.createElement('p');
-        commentDateResto.className = 'comment-date-resto';
-        let commentImageResto = document.createElement('img');
-        commentImageResto.className = 'comment-image-resto';
-        let commentNoteResto = document.createElement('p');
-        commentNoteResto.className = 'comment-note-resto';
-        // On rattache les éléments crées à la <div> commentaires
-        commentResto.appendChild(commentInfoResto);
-        commentResto.appendChild(commentAuteurResto);
-        commentResto.appendChild(commentaireResto);
-        commentResto.appendChild(commentDateResto);
-        commentResto.appendChild(commentImageResto);
-        commentResto.appendChild(commentNoteResto);
-        ///////////////////////////////////////////////////////////////
 
         // Crée une balise <img> pour afficher une photo du restaurant et la rend non visible
         let imageResto = document.createElement('img');
@@ -192,7 +168,7 @@ class Restaurant {
                         let note = sessionStorage.getItem("note-modal-resto");
 
                         // Création du nouveau commentaire avec les données recueillies
-                        if ((pseudo !== "") && (commentaire !== "") && (note !== "")) {
+                        if ((pseudo !== "") && (note !== "") && (commentaire !== "")) {
                             let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
                             commentUser.initializeHtmlCommentUser();
 
@@ -244,7 +220,6 @@ class Restaurant {
         this.resultats.appendChild(closeCommentResto);
         this.resultats.appendChild(addressResto);
         this.resultats.appendChild(boutonAjoutCommentResto);
-        this.resultats.appendChild(commentResto);
         this.resultats.appendChild(imageResto);
         this.resultats.appendChild(noteResto);
         listRestaurants.appendChild(this.resultats);
@@ -252,7 +227,7 @@ class Restaurant {
     }
 
     /**
-     * Charge les commentaires de l' API
+     * Charge les commentaires du fichier JSON et de l' API
      * @return { object } Les commentaires correspondant aux restaurants
      */
     getComments() {
@@ -267,9 +242,34 @@ class Restaurant {
                 commentObject.initializeHtml();
             });
         } else {
-            console.log("METHODE GET COMMENTS A FINIR :", );
+            let placeId = that.id;
+            that.getCommentsApi(placeId);
         }
     }
+
+    /**
+     * Requête pour récupérer les commentaires des restaurants via l'api
+     * @param placeId
+     */
+    getCommentsApi(placeId) {
+        let that = this;
+        // Utilisation de la fonction XHR "ajaxGet"
+        ajaxGet(
+            "https://maps.googleapis.com/maps/api/place/details/json?place_id="+placeId+"&language=fr&fields=name,rating,vicinity,reviews&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            function (result) {
+            let results = JSON.parse(result);
+            console.log("RESULTS: ", results.result.reviews);
+            for (let i =0; i < results.result.reviews.length; i++) {
+                let pseudo = results.result.reviews[i].author_name;
+                let commentaire = results.result.reviews[i].text;
+                let note = results.result.reviews[i].rating;
+
+                let commentApi = new Comment(pseudo, note, commentaire, that.resultats);
+                commentApi.initializeHtml();
+            }
+        });
+    }
+
 
     /**
      * Récupère l'image du restaurant avec street view
