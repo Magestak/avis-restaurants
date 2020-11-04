@@ -16,7 +16,7 @@ class Restaurant {
         this.name = name;
         this.address = address;
         this.rating = rating;
-        if (commentsJson != undefined) {
+        if (commentsJson !== undefined) {
             this.commentsJson = commentsJson;
         }
         this.photos = this.getUrl();
@@ -47,9 +47,9 @@ class Restaurant {
     /**
      * Crée la liste des restaurants affichés sur le côté de la map
      */
-    // TODO: Méthode à finir
     initHtml() {
         let that = this;
+        let a = 0;
 
         // On crée une <div> pour accueillir le contenu HTML pour chaque restaurant
         this.resultats = document.createElement('div');
@@ -82,11 +82,6 @@ class Restaurant {
         else if (x === 5) {etoileResto.src = "../img/5_stars.png";}
         else {etoileResto.src = "../img/0_star.png";}
 
-        // Crée une <div> pour les commentaires
-        let commentResto = document.createElement('div');
-        commentResto.className = 'comment-resto';
-        commentResto.style.display = 'none';
-
         // Crée une balise <img> pour afficher une photo du restaurant et la rend non visible
         let imageResto = document.createElement('img');
         imageResto.src = that.photos;
@@ -98,20 +93,19 @@ class Restaurant {
         closeCommentResto.src = "../img/close.png";
         closeCommentResto.style.display = "none";
 
-        // Charge les commentaires provenant de l' API et les rend non visibles
+        // Charge les avis provenant de l' API et les rend non visibles
         this.resultats.style.height = "120px";
         this.resultats.style.overflow = "hidden";
 
-        // Crée un bouton d'exécution "modal" et le rend non visible
+        // Crée un bouton pour l'ouverture d'une "modale" d'ajout d'avis user et le rend non visible
         let boutonAjoutCommentResto = document.createElement('button');
         boutonAjoutCommentResto.className = 'bouton-ajout-comment-resto';
         boutonAjoutCommentResto.setAttribute("onclick", "document.getElementById('myModal').style.display='block'");
-        boutonAjoutCommentResto.textContent = "Ajouter un commentaire";
+        boutonAjoutCommentResto.textContent = "Ajouter un avis";
         boutonAjoutCommentResto.style.display = 'none';
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
         nameResto.addEventListener('click', function (e) {
-            // TODO: voir si possible avec un "if" de fermer le resto éventuellement ouvert
             e.target.style.color = "#FC6354";
             that.resultats.style.backgroundColor = "#EFEEE4";
             that.resultats.style.height = "500px";
@@ -124,9 +118,14 @@ class Restaurant {
             closeCommentResto.style.display = 'block';
 
             // Affiche les commentaires de l'API
-            that.getComments();
+            if (a === 0) {
+                that.getComments();
+                a = 1;
+            } else if (a === 1) {
+                console.log("Pas de nouveaux commentaires");
+            }
 
-            // Affiche le bouton qui permet l' ajout de commentaire par l' utilisateur via l' ouverture d'une modal
+            // Affiche le bouton qui permet l' ajout d'avis par l' utilisateur via l' ouverture d'une modale
             boutonAjoutCommentResto.style.display = 'block';
 
             // On écoute l'ouverture de la modale d'ajout de commentaires
@@ -170,7 +169,7 @@ class Restaurant {
                         // Création du nouveau commentaire avec les données recueillies
                         if ((pseudo !== "") && (note !== "") && (commentaire !== "")) {
                             let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
-                            commentUser.initializeHtmlCommentUser();
+                            commentUser.initializeHtml();
 
                             // Si le commentaire existe
                             if (commentUser) {
@@ -232,11 +231,6 @@ class Restaurant {
      */
     getComments() {
         let that = this;
-
-        let ajoutCommentaires = document.querySelector('.ajout-commentaires');
-        if (ajoutCommentaires) {
-            ajoutCommentaires.innerHTML = "";
-        }
 
         if (that.commentsJson) {
             that.commentsJson.forEach(function(comment) {

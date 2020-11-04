@@ -13,6 +13,7 @@ class Map {
         };
         this.marqueurUser = {}; // Le marqueur de la position géolocalisée de l'utilisateur
         this.restaurants = []; // La liste des restaurants
+        this.restaurantUser = {}; // Si l'utilisateur rentre un restaurant
     }
 
     /**
@@ -145,7 +146,7 @@ class Map {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(
-            "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=15000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
             function (results) {
             let result = JSON.parse(results);
             for (let i = 0; i < result.results.length; i++) {
@@ -164,7 +165,6 @@ class Map {
                 // On récupère les restaurants crées
                 that.restaurants.push(restaurant);
             }
-            console.log("THAT RESTAURANTS: ", that.restaurants);
 
             // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
             that.onlyVisibleRestaurants();
@@ -198,6 +198,7 @@ class Map {
         this.maCarte.on('moveend', function () {
             that.restaurants.length = 0;
 
+            // On vide la liste pour accueillir les nouveaux restaurants géolocalisés
             let listRestaurants = document.getElementById('restaurants-list');
             listRestaurants.innerHTML = '';
 
@@ -206,7 +207,6 @@ class Map {
 
             // On charge les restaurants de l'api google places
             let mapCenter = that.maCarte.getCenter();
-            console.log("MAP CENTER: ", mapCenter);
             that.getPlaces(mapCenter);
             console.log("THAT RESTAURANTS: ", that.restaurants);
 
@@ -222,6 +222,7 @@ class Map {
         let starsMin = document.getElementById('etoiles-mini');
         let starsMax = document.getElementById('etoiles-maxi');
 
+        // On écoute les changements des select pour le filtre sur les étoiles
         starsMin.addEventListener('change', userChoice);
         starsMax.addEventListener('change', userChoice);
 
@@ -230,6 +231,7 @@ class Map {
             let choiceMinUser = parseInt(starsMin.value);
             let choiceMaxUser = parseInt(starsMax.value);
 
+            // On filtre les restaurants selon les valeurs des select
             if (restaurant.rating < choiceMinUser || restaurant.rating > choiceMaxUser) {
                 restaurant.resultats.style.display = 'none';
                 // TODO: méthode pour supprimer le marqueur ?
@@ -249,10 +251,7 @@ class Map {
     addRestaurant() {
         let that = this;
         that.maCarte.on('click', function (e) {
-            //debugger;
             let coordNewResto = e.latlng;
-
-            console.log("COORD NEW RESTO: ", coordNewResto);
 
             // On ouvre la modale d'ajout de restaurant
             document.getElementById('myModal1').style.display = "block";
@@ -303,17 +302,17 @@ class Map {
                             adresseNouveauResto,
                             noteNouveauResto,
                             null);
-                        console.log("NEW RESTO: ", nouveauRestaurant);
                         nouveauRestaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                         nouveauRestaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
-                        // On ajoute le restaurants crée à la liste des restaurants
+                        // On ajoute le restaurant crée à la liste des restaurants
+                        // TODO: voir si on doit ajouter le new resto à that.restaurants
                         that.restaurants.push(nouveauRestaurant);
                         console.log("THAT RESTAURANTS: ", that.restaurants);
 
 
                         // Si le nouveau restaurant est crée
-                        if (nouveauRestaurant) {
+                        if (that.restaurantUser !== null) {
                             // On vide le contenu de session storage
                             sessionStorage.removeItem('nom-modal1-resto');
                             sessionStorage.removeItem('address-modal1-resto');
@@ -340,13 +339,12 @@ class Map {
     }
 
 
-    // TODO: Finir méthode restaurant,initHtml (méthode getDetails (mettre un console log dans le else), puis init)
-    // TODO: Voir problème du clic sur nom du resto qui efface le contenu des autres restos ouverts = bloquer l'ouverture d'autres restos
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
     // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
     // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
     // TODO: Empêcher ajout d'un 2ème resto sans marqueur
-    // TODO: barre de recherche??
+    // TODO: nettoyer restos en double entre fichier json et api
+    // TODO: voir pour comment garder comment user et new resto si moveend map (supprimer remove item sessionstorage ?
 }
 
 

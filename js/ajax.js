@@ -23,7 +23,7 @@
  * @param { function } callback = la fonction appelée en cas de succès
  */
 function ajaxGet(url, callback) {
-    var req = new XMLHttpRequest();
+    let req = new XMLHttpRequest();
     req.open("GET", url);
     req.addEventListener("load", function () {
         if (req.status >= 200 && req.status < 400) {
