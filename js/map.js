@@ -58,8 +58,6 @@ class Map {
             that.marqueurUser = L.marker(L.latLng(that.coordsFromBrowser.lat, that.coordsFromBrowser.lng), {icon: iconUser},
             ).bindPopup("Vous êtes ici !").addTo(that.maCarte);
 
-            that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + that.coordsFromBrowser.lat + "," + that.coordsFromBrowser.lng + "&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
-
         }
 
         /**
@@ -95,21 +93,6 @@ class Map {
             maxZoom: 20,
             attribution: '&copy; Openstreetmap France | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.maCarte);
-
-        // On charge les restaurants du fichier json
-        that.getJson("../js/restaurants.json");
-
-        // On charge les restaurants de l'api google places
-        // TODO: voir pour changer location dans la requète avec getBounds?? ou marqueur draggable??
-        let limitesCarte = that.maCarte.getBounds(); // TEST
-        console.log("GET BOUNDS: ", limitesCarte); // TEST
-        // limitesCarte._southWest.lng // sud
-        // limitesCarte._southWest.lat // ouest
-        // limitesCarte._northEast.lng // nord
-        // limitesCarte._northEast.lat // est
-        //that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?locationbias=rectangle:"+limitesCarte._southWest.lng+","+limitesCarte._southWest.lat+"|"+limitesCarte._northEast.lng+","+limitesCarte._northEast.lat+"&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
-        //that.getPlaces("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+that.coordsFromBrowser.lat+","+that.coordsFromBrowser.lng+"&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU");
-
 
         // On met à jour la liste des restaurants sur le côté en fonction de la map visible
         that.restaurantUpdate();
@@ -156,12 +139,14 @@ class Map {
 
     /**
      * Récupère les restaurants provenant de l'api google places
-     * @param { string } url    // L'url de la requète
+     * @param { string } mapCenter    // Le centre de la carte
      */
-    getPlaces(url) {
+    getPlaces(mapCenter) {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
-        ajaxGet(url, function (results) {
+        ajaxGet(
+            "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=30000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            function (results) {
             let result = JSON.parse(results);
             for (let i = 0; i < result.results.length; i++) {
                 // Création d'une instance de la classe restaurant
@@ -211,8 +196,21 @@ class Map {
     restaurantUpdate() {
         let that = this;
         this.maCarte.on('moveend', function () {
+            that.restaurants.length = 0;
+
+            let listRestaurants = document.getElementById('restaurants-list');
+            listRestaurants.innerHTML = '';
+
+            // On charge les restaurants du fichier json
+            that.getJson("../js/restaurants.json");
+
+            // On charge les restaurants de l'api google places
+            let mapCenter = that.maCarte.getCenter();
+            console.log("MAP CENTER: ", mapCenter);
+            that.getPlaces(mapCenter);
+            console.log("THAT RESTAURANTS: ", that.restaurants);
+
             // TODO: voir pour garder valeur des select avant mouvement
-            that.onlyVisibleRestaurants();
         });
     }
 

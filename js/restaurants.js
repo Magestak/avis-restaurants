@@ -234,7 +234,9 @@ class Restaurant {
         let that = this;
 
         let ajoutCommentaires = document.querySelector('.ajout-commentaires');
-        ajoutCommentaires.innerHTML = "";
+        if (ajoutCommentaires) {
+            ajoutCommentaires.innerHTML = "";
+        }
 
         if (that.commentsJson) {
             that.commentsJson.forEach(function(comment) {
