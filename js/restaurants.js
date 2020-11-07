@@ -21,6 +21,7 @@ class Restaurant {
         }
         this.photos = this.getUrl();
         this.resultats;
+        this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
     }
 
     /**
@@ -40,8 +41,16 @@ class Restaurant {
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
         });
-        let marqueur = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
-        marqueur.bindPopup(titleInfo);
+        this.marqueurResto = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
+        this.marqueurResto.bindPopup(titleInfo);
+    }
+
+    /**
+     * Supprime le marqueur qui identifie le restaurant sur la map
+     */
+    removeMarker() {
+        let that = this;
+        that.maCarte.removeLayer(that.marqueurResto);
     }
 
     /**
@@ -149,6 +158,7 @@ class Restaurant {
                         boutonValidModalResto.disabled = false;
                     }
                 }
+
                 // On écoute la validation du bouton d'envoi du formulaire
                 boutonValidModalResto.addEventListener('click', function (event) {
                     // On bloque l'envoi du formulaire
@@ -177,9 +187,11 @@ class Restaurant {
                                 boutonAjoutCommentResto.style.display = "none";
 
                                 // On vide le contenu de session storage
-                                sessionStorage.removeItem('pseudo-comment-modal-resto');
-                                sessionStorage.removeItem('comment-modal-resto');
-                                sessionStorage.removeItem('note-modal-resto');
+                                //sessionStorage.clear();
+                                // ou
+                                //sessionStorage.removeItem('pseudo-comment-modal-resto');
+                                //sessionStorage.removeItem('comment-modal-resto');
+                                //sessionStorage.removeItem('note-modal-resto');
 
                                 // On réinitialise les valeurs des input
                                 document.getElementById('pseudo-comment-modal-resto').value = '';

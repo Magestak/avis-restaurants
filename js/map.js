@@ -13,7 +13,7 @@ class Map {
         };
         this.marqueurUser = {}; // Le marqueur de la position géolocalisée de l'utilisateur
         this.restaurants = []; // La liste des restaurants
-        this.restaurantUser = {}; // Si l'utilisateur rentre un restaurant
+        //this.restaurantUser = {}; // Si l'utilisateur rentre un restaurant
     }
 
     /**
@@ -126,15 +126,10 @@ class Map {
                     result[i].address,
                     x,
                     result[i].ratings,);
-                restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
-                restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
-                // On récupère les restaurants crées
+                // On récupère les restaurants crées dans "that.restaurants"
                 that.restaurants.push(restaurant);
             }
-            // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
-            that.onlyVisibleRestaurants();
-
         });
     }
 
@@ -159,10 +154,8 @@ class Map {
                     Math.round(result.results[i].rating),
                     null,
                 );
-                restaurant.createMarker(); // Crée un marqueur pour chaque restaurant
-                restaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
-                // On récupère les restaurants crées
+                // On récupère les restaurants crées crées dans "that.restaurants"
                 that.restaurants.push(restaurant);
             }
 
@@ -177,15 +170,53 @@ class Map {
      */
     onlyVisibleRestaurants() {
         let that = this;
-        that.restaurants.forEach(restaurant => {
-            // Filtre les restaurants selon le choix utilisateur
-            that.filterRestaurants(restaurant);
 
-            // Affiche uniquement sur le côté de la map les restaurants visibles sur la map
+        // On supprime les doublons entre le fichier JSON et les restaurants chargés depuis l'API
+        let newArray = [];
+        let uniqueObject = {};
+
+        for (let i in that.restaurants) {
+            let itemName = that.restaurants[i]['name'];
+            uniqueObject[itemName] = that.restaurants[i];
+        }
+        for (let j in uniqueObject) {
+            newArray.push(uniqueObject[j]);
+        }
+
+        // Après élimination des doublons, on réaffecte le tableau filtré à "that.restaurants"
+        that.restaurants = newArray;
+
+        // Pour chaque restaurant
+        that.restaurants.forEach(restaurant => {
+            // On crée un marqueur pour ce restaurant
+            restaurant.createMarker();
+
+            // On crée le contenu Html
+            restaurant.initHtml();
+
+            // On récupère les valeurs des filtres sur les étoiles
+            let starsMin = document.getElementById('etoiles-mini');
+            let starsMax = document.getElementById('etoiles-maxi');
+            let choiceMinUser = parseInt(starsMin.value);
+            let choiceMaxUser = parseInt(starsMax.value);
+
+            // On vérifie si le restaurant est bien visible sur la map affichée
             if (!(that.maCarte.getBounds().contains(restaurant.location))) {
+                // Le restaurant n'est pas visible
                 restaurant.resultats.style.display = "none";
+                restaurant.removeMarker();
             } else {
-                restaurant.resultats.style.display = "block";
+                // Pour le restaurant visible, on vérifie si il correspond aux critères du filtre sur les étoiles
+                if ((restaurant.rating < choiceMinUser) || (restaurant.rating > choiceMaxUser)) {
+                    // Le restaurant n'est pas dans les critères
+                    restaurant.resultats.style.display = "none";
+                    restaurant.removeMarker();
+                } else {
+                    // Le restaurant est dans les critères
+                    console.log("Le restaurant est compris dans le filtre et est visible sur la carte");
+                    // Filtre les restaurants selon le choix utilisateur
+                    that.filterRestaurants(restaurant);
+                }
             }
         })
     }
@@ -195,7 +226,11 @@ class Map {
      */
     restaurantUpdate() {
         let that = this;
+
         this.maCarte.on('moveend', function () {
+            that.restaurants.forEach(restaurant => {
+                restaurant.removeMarker();
+            })
             that.restaurants.length = 0;
 
             // On vide la liste pour accueillir les nouveaux restaurants géolocalisés
@@ -205,12 +240,10 @@ class Map {
             // On charge les restaurants du fichier json
             that.getJson("../js/restaurants.json");
 
-            // On charge les restaurants de l'api google places
+            // On charge les restaurants de l'api google places, et on affiche uniquement ceux visibles sur la map
             let mapCenter = that.maCarte.getCenter();
             that.getPlaces(mapCenter);
-            console.log("THAT RESTAURANTS: ", that.restaurants);
 
-            // TODO: voir pour garder valeur des select avant mouvement
         });
     }
 
@@ -226,22 +259,17 @@ class Map {
         starsMin.addEventListener('change', userChoice);
         starsMax.addEventListener('change', userChoice);
 
-
         function userChoice() {
             let choiceMinUser = parseInt(starsMin.value);
             let choiceMaxUser = parseInt(starsMax.value);
 
-            // On filtre les restaurants selon les valeurs des select
-            if (restaurant.rating < choiceMinUser || restaurant.rating > choiceMaxUser) {
+            if ((restaurant.rating < choiceMinUser) || (restaurant.rating > choiceMaxUser)) {
                 restaurant.resultats.style.display = 'none';
-                // TODO: méthode pour supprimer le marqueur ?
+                restaurant.removeMarker();
             } else {
                 restaurant.resultats.style.display = 'block';
+                restaurant.createMarker();
             }
-            if (!(that.maCarte.getBounds().contains(restaurant.location))) {
-                restaurant.resultats.style.display = "none";
-            }
-
         }
     }
 
@@ -312,11 +340,11 @@ class Map {
 
 
                         // Si le nouveau restaurant est crée
-                        if (that.restaurantUser !== null) {
+                        if (nouveauRestaurant) {
                             // On vide le contenu de session storage
-                            sessionStorage.removeItem('nom-modal1-resto');
-                            sessionStorage.removeItem('address-modal1-resto');
-                            sessionStorage.removeItem('note-modal1-resto');
+                            //sessionStorage.removeItem('nom-modal1-resto');
+                            //sessionStorage.removeItem('address-modal1-resto');
+                            //sessionStorage.removeItem('note-modal1-resto');
 
                             // On réinitialise les valeurs des input
                             document.getElementById('nom-modal1-resto').value = '';
@@ -345,6 +373,7 @@ class Map {
     // TODO: Empêcher ajout d'un 2ème resto sans marqueur
     // TODO: nettoyer restos en double entre fichier json et api
     // TODO: voir pour comment garder comment user et new resto si moveend map (supprimer remove item sessionstorage ?
+    // TODO: méthode pour supprimer les marqueurs des restos si filtres étoiles activés?
 }
 
 
