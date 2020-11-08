@@ -197,8 +197,6 @@ class Map {
             // On récupère les valeurs des filtres sur les étoiles
             let starsMin = document.getElementById('etoiles-mini');
             let starsMax = document.getElementById('etoiles-maxi');
-            let choiceMinUser = parseInt(starsMin.value);
-            let choiceMaxUser = parseInt(starsMax.value);
 
             // On vérifie si le restaurant est bien visible sur la map affichée
             if (!(that.maCarte.getBounds().contains(restaurant.location))) {
@@ -207,7 +205,7 @@ class Map {
                 restaurant.removeMarker();
             } else {
                 // Pour le restaurant visible, on vérifie si il correspond aux critères du filtre sur les étoiles
-                if ((restaurant.rating < choiceMinUser) || (restaurant.rating > choiceMaxUser)) {
+                if ((restaurant.rating < starsMin.value) || (restaurant.rating > starsMax.value)) {
                     // Le restaurant n'est pas dans les critères
                     restaurant.resultats.style.display = "none";
                     restaurant.removeMarker();
@@ -251,7 +249,6 @@ class Map {
      * Ecoute et applique le filtre sur les restaurants demandé par l'utilisateur
      */
     filterRestaurants(restaurant) {
-        let that = this;
         let starsMin = document.getElementById('etoiles-mini');
         let starsMax = document.getElementById('etoiles-maxi');
 
@@ -260,13 +257,16 @@ class Map {
         starsMax.addEventListener('change', userChoice);
 
         function userChoice() {
-            let choiceMinUser = parseInt(starsMin.value);
-            let choiceMaxUser = parseInt(starsMax.value);
+            // On efface le marqueur
+            restaurant.removeMarker();
 
-            if ((restaurant.rating < choiceMinUser) || (restaurant.rating > choiceMaxUser)) {
+            // On compare la note du restaurant au filtre demandé par l'utilisateur
+            if ((restaurant.rating < starsMin.value) || (restaurant.rating > starsMax.value)) {
+                // Le restaurant n'est pas dans la cible
                 restaurant.resultats.style.display = 'none';
                 restaurant.removeMarker();
             } else {
+                // Le restaurant est dans la cible
                 restaurant.resultats.style.display = 'block';
                 restaurant.createMarker();
             }
@@ -368,12 +368,9 @@ class Map {
 
 
     // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
-    // TODO: voir pb filtre sur étoiles de quand on bouge la map, le filtre n'est plus actif
     // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
     // TODO: Empêcher ajout d'un 2ème resto sans marqueur
-    // TODO: nettoyer restos en double entre fichier json et api
     // TODO: voir pour comment garder comment user et new resto si moveend map (supprimer remove item sessionstorage ?
-    // TODO: méthode pour supprimer les marqueurs des restos si filtres étoiles activés?
 }
 
 
