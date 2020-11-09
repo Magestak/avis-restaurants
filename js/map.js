@@ -69,7 +69,6 @@ class Map {
             switch (error.code) {
                 case error.PERMISSION_DENIED:
                     confirm("User denied the request for Geolocation.")
-                    // TODO: voir pour mettre le draggable sur marqueur par défaut sur Paris, comme pour position user
                     that.marqueurUser = L.marker(L.latLng(that.positionDefault.lat, that.positionDefault.lng), {icon: iconUser}).addTo(that.maCarte);
                     that.marqueurUser.bindPopup("<p>Position par défaut</p>");
                     break;
@@ -141,7 +140,7 @@ class Map {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(
-            "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=15000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=15000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
             function (results) {
             let result = JSON.parse(results);
             for (let i = 0; i < result.results.length; i++) {
@@ -212,6 +211,7 @@ class Map {
                 } else {
                     // Le restaurant est dans les critères
                     console.log("Le restaurant est compris dans le filtre et est visible sur la carte");
+
                     // Filtre les restaurants selon le choix utilisateur
                     that.filterRestaurants(restaurant);
                 }
@@ -238,7 +238,8 @@ class Map {
             // On charge les restaurants du fichier json
             that.getJson("../js/restaurants.json");
 
-            // On charge les restaurants de l'api google places, et on affiche uniquement ceux visibles sur la map
+            // On charge les restaurants de l'api google places, et on affiche uniquement ceux visibles sur la map en récupérant
+            // les coordonnées du centre de la carte
             let mapCenter = that.maCarte.getCenter();
             that.getPlaces(mapCenter);
 

@@ -263,10 +263,10 @@ class Restaurant {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(
-            "https://maps.googleapis.com/maps/api/place/details/json?place_id="+placeId+"&language=fr&fields=name,rating,vicinity,reviews&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id="+placeId+"&language=fr&fields=name,rating,vicinity,reviews&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
             function (result) {
             let results = JSON.parse(result);
-            console.log("RESULTS: ", results.result.reviews);
+
             for (let i =0; i < results.result.reviews.length; i++) {
                 let pseudo = results.result.reviews[i].author_name;
                 let commentaire = results.result.reviews[i].text;
