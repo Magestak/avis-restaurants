@@ -13,7 +13,7 @@ class Map {
         };
         this.marqueurUser = {}; // Le marqueur de la position géolocalisée de l'utilisateur
         this.restaurants = []; // La liste des restaurants
-        //this.restaurantUser = {}; // Si l'utilisateur rentre un restaurant
+        this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
     }
 
     /**
@@ -33,7 +33,7 @@ class Map {
 
         // On crée un icône personnalisé pour la librairie leaflet qui sera utilisé pour marquer la position de l'utilisateur
         let iconUser = L.icon({
-            iconUrl: '../img/map-marker-alt-solid-purple.png',
+            iconUrl: 'img/map-marker-alt-solid-purple.png',
             iconSize: [25, 38],
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
@@ -95,10 +95,10 @@ class Map {
         }).addTo(this.maCarte);
 
         // On met à jour la liste des restaurants sur le côté en fonction de la map visible
-        that.restaurantUpdate();
+        this.restaurantUpdate();
 
         // Méthode pour ajouter un nouveau restaurant
-        that.addRestaurant();
+        this.addRestaurant();
 
     }
 
@@ -126,7 +126,7 @@ class Map {
                     x,
                     result[i].ratings,);
 
-                // On récupère les restaurants crées dans "that.restaurants"
+                // On récupère les restaurants crées dans "this.restaurants"
                 that.restaurants.push(restaurant);
             }
         });
@@ -140,7 +140,7 @@ class Map {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(
-            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=15000&type=restaurant&language=fr&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            "https://blooming-sierra-85473.herokuapp.com/https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+mapCenter.lat+","+mapCenter.lng+"&radius=15000&type=restaurant&language=fr&key="+this.magic,
             function (results) {
             let result = JSON.parse(results);
             for (let i = 0; i < result.results.length; i++) {
@@ -156,6 +156,7 @@ class Map {
 
                 // On récupère les restaurants crées crées dans "that.restaurants"
                 that.restaurants.push(restaurant);
+                console.log("THAT RESTAURANTS: ", that.restaurants);
             }
 
             // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
@@ -170,23 +171,23 @@ class Map {
     onlyVisibleRestaurants() {
         let that = this;
 
-        // On supprime les doublons entre le fichier JSON et les restaurants chargés depuis l'API
+        // On supprime les doublons entre les nouveaux restaurants et les fichiers déjà présent dans this.restaurants
         let newArray = [];
         let uniqueObject = {};
 
-        for (let i in that.restaurants) {
-            let itemName = that.restaurants[i]['name'];
-            uniqueObject[itemName] = that.restaurants[i];
+        for (let i in this.restaurants) {
+            let itemName = this.restaurants[i]['name'];
+            uniqueObject[itemName] = this.restaurants[i];
         }
         for (let j in uniqueObject) {
             newArray.push(uniqueObject[j]);
         }
 
         // Après élimination des doublons, on réaffecte le tableau filtré à "that.restaurants"
-        that.restaurants = newArray;
+        this.restaurants = newArray;
 
         // Pour chaque restaurant
-        that.restaurants.forEach(restaurant => {
+        this.restaurants.forEach(restaurant => {
             // On crée un marqueur pour ce restaurant
             restaurant.createMarker();
 
@@ -229,14 +230,14 @@ class Map {
             that.restaurants.forEach(restaurant => {
                 restaurant.removeMarker();
             })
-            that.restaurants.length = 0;
+            //that.restaurants.length = 0;
 
             // On vide la liste pour accueillir les nouveaux restaurants géolocalisés
             let listRestaurants = document.getElementById('restaurants-list');
             listRestaurants.innerHTML = '';
 
             // On charge les restaurants du fichier json
-            that.getJson("../js/restaurants.json");
+            that.getJson("js/restaurants.json");
 
             // On charge les restaurants de l'api google places, et on affiche uniquement ceux visibles sur la map en récupérant
             // les coordonnées du centre de la carte
@@ -279,7 +280,7 @@ class Map {
      */
     addRestaurant() {
         let that = this;
-        that.maCarte.on('click', function (e) {
+        this.maCarte.on('click', function(e) {
             let coordNewResto = e.latlng;
 
             // On ouvre la modale d'ajout de restaurant
@@ -339,7 +340,6 @@ class Map {
                         that.restaurants.push(nouveauRestaurant);
                         console.log("THAT RESTAURANTS: ", that.restaurants);
 
-
                         // Si le nouveau restaurant est crée
                         if (nouveauRestaurant) {
                             // On vide le contenu de session storage
@@ -372,6 +372,7 @@ class Map {
     // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
     // TODO: Empêcher ajout d'un 2ème resto sans marqueur
     // TODO: voir pour comment garder comment user et new resto si moveend map (supprimer remove item sessionstorage ?
+    // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
 }
 
 

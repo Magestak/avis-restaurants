@@ -5,17 +5,15 @@
  */
 function ajaxGet(url, callback) {
     let req = new XMLHttpRequest();
-    req.open("GET", url);
-    req.addEventListener("load", function () {
-        if (req.status >= 200 && req.status < 400) {
-            // Appelle la fonction callback en lui passant la réponse de la requête
-            callback(req.responseText);
-        } else {
-            console.error(req.status + " " + req.statusText + " " + url);
+    req.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            callback(this.responseText);
+            //console.log(this.getAllResponseHeaders());
         }
-    });
-    req.addEventListener("error", function () {
-        console.error("Erreur réseau avec l'URL " + url);
-    });
+    };
+    req.open("GET", url);
     req.send(null);
 }
+
+// Adresse serveur proxy crée sur Heroku = "https://blooming-sierra-85473.herokuapp.com/"
+// ou bien = https://cors-anywhere.herokuapp.com/

@@ -22,6 +22,7 @@ class Restaurant {
         this.photos = this.getUrl();
         this.resultats;
         this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
+        this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
     }
 
     /**
@@ -32,17 +33,17 @@ class Restaurant {
         let that = this;
         let latLng = this.location;
         let titleInfo = `
-        ${that.name}
-        ${that.address}
+        ${this.name}
+        ${this.address}
         `;
         let iconResto = L.icon({
-            iconUrl: '../img/map-marker-alt-solid-red.png',
+            iconUrl: 'img/map-marker-alt-solid-red.png',
             iconSize: [25, 38],
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
         });
-        this.marqueurResto = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
-        this.marqueurResto.bindPopup(titleInfo);
+        that.marqueurResto = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
+        that.marqueurResto.bindPopup(titleInfo);
     }
 
     /**
@@ -84,12 +85,12 @@ class Restaurant {
         // Affiche l'image des étoiles de la note moyenne du restaurant
         let etoileResto = document.createElement('img');
         etoileResto.className = 'note-resto-img';
-        if (x === 1) {etoileResto.src = "../img/1_star.png";}
-        else if (x === 2) {etoileResto.src = "../img/2_stars.png";}
-        else if (x === 3) {etoileResto.src = "../img/3_stars.png";}
-        else if (x === 4) {etoileResto.src = "../img/4_stars.png";}
-        else if (x === 5) {etoileResto.src = "../img/5_stars.png";}
-        else {etoileResto.src = "../img/0_star.png";}
+        if (x === 1) {etoileResto.src = "img/1_star.png";}
+        else if (x === 2) {etoileResto.src = "img/2_stars.png";}
+        else if (x === 3) {etoileResto.src = "img/3_stars.png";}
+        else if (x === 4) {etoileResto.src = "img/4_stars.png";}
+        else if (x === 5) {etoileResto.src = "img/5_stars.png";}
+        else {etoileResto.src = "img/0_star.png";}
 
         // Crée une balise <img> pour afficher une photo du restaurant et la rend non visible
         let imageResto = document.createElement('img');
@@ -99,7 +100,7 @@ class Restaurant {
         // Crée une balise <img> permettant de fermer les commentaires et la rend non visible
         let closeCommentResto = document.createElement('img');
         closeCommentResto.className = "close";
-        closeCommentResto.src = "../img/close.png";
+        closeCommentResto.src = "img/close.png";
         closeCommentResto.style.display = "none";
 
         // Charge les avis provenant de l' API et les rend non visibles
@@ -263,7 +264,7 @@ class Restaurant {
         let that = this;
         // Utilisation de la fonction XHR "ajaxGet"
         ajaxGet(
-            "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id="+placeId+"&language=fr&fields=name,rating,vicinity,reviews&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU",
+            "https://blooming-sierra-85473.herokuapp.com/https://maps.googleapis.com/maps/api/place/details/json?place_id="+placeId+"&language=fr&fields=name,rating,vicinity,reviews&key="+this.magic,
             function (result) {
             let results = JSON.parse(result);
 
