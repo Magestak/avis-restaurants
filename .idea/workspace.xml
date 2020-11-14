@@ -21,8 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fdc4e417-662a-4b6c-93c2-85767d02eb8d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/ajax.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/ajax.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/comments.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/comments.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/map.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/restaurants.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/restaurants.js" afterDir="false" />
     </list>
@@ -77,7 +75,8 @@
       <workItem from="1603433646037" duration="78673000" />
       <workItem from="1603909959679" duration="67976000" />
       <workItem from="1604345148670" duration="119033000" />
-      <workItem from="1604952861279" duration="20238000" />
+      <workItem from="1604952861279" duration="20904000" />
+      <workItem from="1605165701289" duration="44899000" />
     </task>
     <servers />
   </component>
@@ -97,6 +96,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="492" y="192" key="#Plugins" timestamp="1605165741215">
+      <screen x="0" y="23" width="1792" height="1046" />
+    </state>
+    <state x="492" y="192" key="#Plugins/0.23.1792.1046/-1920.63.1920.1057@0.23.1792.1046" timestamp="1605165741215" />
     <state x="583" y="287" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1601847025910">
       <screen x="0" y="23" width="1792" height="1053" />
     </state>

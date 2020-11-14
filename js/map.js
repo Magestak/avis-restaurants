@@ -156,7 +156,6 @@ class Map {
 
                 // On récupère les restaurants crées crées dans "that.restaurants"
                 that.restaurants.push(restaurant);
-                console.log("THAT RESTAURANTS: ", that.restaurants);
             }
 
             // On affiche sur le côté de la map, les restaurants uniquement visibles sur la carte
@@ -171,7 +170,7 @@ class Map {
     onlyVisibleRestaurants() {
         let that = this;
 
-        // On supprime les doublons entre les nouveaux restaurants et les fichiers déjà présent dans this.restaurants
+        // On supprime les doublons entre les nouveaux restaurants et ceux déjà présent dans this.restaurants
         let newArray = [];
         let uniqueObject = {};
 
@@ -185,12 +184,11 @@ class Map {
 
         // Après élimination des doublons, on réaffecte le tableau filtré à "that.restaurants"
         this.restaurants = newArray;
+        console.log("THAT RESTAURANTS: ", that.restaurants);
 
         // Pour chaque restaurant
         this.restaurants.forEach(restaurant => {
-            // On crée un marqueur pour ce restaurant
-            restaurant.createMarker();
-
+            restaurant.removeMarker(); // TODO: voir si nécessaire de garder
             // On crée le contenu Html
             restaurant.initHtml();
 
@@ -198,25 +196,23 @@ class Map {
             let starsMin = document.getElementById('etoiles-mini');
             let starsMax = document.getElementById('etoiles-maxi');
 
-            // On vérifie si le restaurant est bien visible sur la map affichée
-            if (!(that.maCarte.getBounds().contains(restaurant.location))) {
-                // Le restaurant n'est pas visible
+            // Pour chaque restaurant, on vérifie si il correspond aux critères du filtre sur les étoiles
+            if ((restaurant.rating < starsMin.value) || (restaurant.rating > starsMax.value)) {
+                // Le restaurant n'est pas dans les critères
                 restaurant.resultats.style.display = "none";
-                restaurant.removeMarker();
             } else {
-                // Pour le restaurant visible, on vérifie si il correspond aux critères du filtre sur les étoiles
-                if ((restaurant.rating < starsMin.value) || (restaurant.rating > starsMax.value)) {
-                    // Le restaurant n'est pas dans les critères
+                // Le restaurant est dans les critères, alors on vérifie si il est bien visible sur la map affichée
+                if (!(that.maCarte.getBounds().contains(restaurant.location))) {
+                    // Le restaurant n'est pas visible
                     restaurant.resultats.style.display = "none";
-                    restaurant.removeMarker();
                 } else {
-                    // Le restaurant est dans les critères
-                    console.log("Le restaurant est compris dans le filtre et est visible sur la carte");
-
-                    // Filtre les restaurants selon le choix utilisateur
-                    that.filterRestaurants(restaurant);
+                    // Le restaurant est dans les critères et, est visible sur la map
+                    restaurant.resultats.style.display = "block";
+                    restaurant.createMarker();
                 }
             }
+            // Filtre les restaurants selon le choix utilisateur
+            that.filterRestaurants(restaurant);
         })
     }
 
@@ -227,10 +223,10 @@ class Map {
         let that = this;
 
         this.maCarte.on('moveend', function () {
+            // On supprime les marqueurs de chaque restaurant sur la map
             that.restaurants.forEach(restaurant => {
                 restaurant.removeMarker();
             })
-            //that.restaurants.length = 0;
 
             // On vide la liste pour accueillir les nouveaux restaurants géolocalisés
             let listRestaurants = document.getElementById('restaurants-list');
@@ -251,6 +247,7 @@ class Map {
      * Ecoute et applique le filtre sur les restaurants demandé par l'utilisateur
      */
     filterRestaurants(restaurant) {
+        let that = this;
         let starsMin = document.getElementById('etoiles-mini');
         let starsMax = document.getElementById('etoiles-maxi');
 
@@ -262,15 +259,20 @@ class Map {
             // On efface le marqueur
             restaurant.removeMarker();
 
-            // On compare la note du restaurant au filtre demandé par l'utilisateur
+            // On compare la note moyenne du restaurant au filtre demandé par l'utilisateur
             if ((restaurant.rating < starsMin.value) || (restaurant.rating > starsMax.value)) {
                 // Le restaurant n'est pas dans la cible
                 restaurant.resultats.style.display = 'none';
-                restaurant.removeMarker();
             } else {
-                // Le restaurant est dans la cible
-                restaurant.resultats.style.display = 'block';
-                restaurant.createMarker();
+                // Le restaurant est dans la cible, alors on vérifie si il est bien visible sur la map affichée
+                if (!(that.maCarte.getBounds().contains(restaurant.location))) {
+                    // Le restaurant n'est pas visible
+                    restaurant.resultats.style.display = 'none';
+                } else {
+                    // Le restaurant est dans la cible et est visible sur la map
+                    restaurant.resultats.style.display = 'block';
+                    restaurant.createMarker();
+                }
             }
         }
     }
@@ -280,8 +282,11 @@ class Map {
      */
     addRestaurant() {
         let that = this;
-        this.maCarte.on('click', function(e) {
-            let coordNewResto = e.latlng;
+        let coordNewResto = {};
+        this.maCarte.on('click', ajoutResto);
+
+        function ajoutResto(e) {
+            coordNewResto = e.latlng;
 
             // On ouvre la modale d'ajout de restaurant
             document.getElementById('myModal1').style.display = "block";
@@ -304,15 +309,14 @@ class Map {
                     boutonValidModal1Resto.disabled = false;
                 }
             }
-
             // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModal1Resto.addEventListener('click', function (event) {
+            boutonValidModal1Resto.addEventListener('click',function (event) {
                 // On bloque l'envoi du formulaire
                 event.preventDefault();
 
                 // On utilise sessionStorage pour stocker la création du nouveau resto le temps de la visite
                 if (typeof sessionStorage != 'undefined') {
-                    // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
+                    // On enregistre les données saisies par l'utilisateur
                     sessionStorage.setItem('nom-modal1-resto', document.getElementById('nom-modal1-resto').value);
                     sessionStorage.setItem('address-modal1-resto', document.getElementById('address-modal1-resto').value);
                     sessionStorage.setItem('note-modal1-resto', document.getElementById('note-modal1-resto').value);
@@ -322,57 +326,45 @@ class Map {
                     let adresseNouveauResto = sessionStorage.getItem("address-modal1-resto");
                     let noteNouveauResto = sessionStorage.getItem("note-modal1-resto");
 
-                    // Création du nouveau commentaire avec les données recueillies
-                    if ((nomNouveauResto !== "") && (adresseNouveauResto !== "") && (noteNouveauResto !== "")) {
-                        // Création d'une instance de la classe restaurant
-                        let nouveauRestaurant = new Restaurant(that.maCarte,
-                            null,
-                            L.latLng(coordNewResto.lat, coordNewResto.lng),
-                            nomNouveauResto,
-                            adresseNouveauResto,
-                            noteNouveauResto,
-                            null);
+                    // Création du nouveau restaurant avec les données recueillies
+                    // Création d'une instance de la classe restaurant
+                    let nouveauRestaurant = new Restaurant(that.maCarte,
+                        null,
+                        L.latLng(coordNewResto.lat, coordNewResto.lng),
+                        nomNouveauResto,
+                        adresseNouveauResto,
+                        noteNouveauResto,
+                        null);
+
+                    // Si le nouveau restaurant est crée
+                    if (nouveauRestaurant) {
                         nouveauRestaurant.createMarker(); // Crée un marqueur pour chaque restaurant
                         nouveauRestaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
 
                         // On ajoute le restaurant crée à la liste des restaurants
-                        // TODO: voir si on doit ajouter le new resto à that.restaurants
                         that.restaurants.push(nouveauRestaurant);
                         console.log("THAT RESTAURANTS: ", that.restaurants);
 
-                        // Si le nouveau restaurant est crée
-                        if (nouveauRestaurant) {
-                            // On vide le contenu de session storage
-                            //sessionStorage.removeItem('nom-modal1-resto');
-                            //sessionStorage.removeItem('address-modal1-resto');
-                            //sessionStorage.removeItem('note-modal1-resto');
+                        // On ferme la modale
+                        document.getElementById('myModal1').style.display = "none";
 
-                            // On réinitialise les valeurs des input
-                            document.getElementById('nom-modal1-resto').value = '';
-                            document.getElementById('address-modal1-resto').value = '';
-                            document.getElementById('note-modal1-resto').value = '';
-
-                            // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
-                            boutonValidModal1Resto.disabled = true;
-
-                            // On ferme la modale
-                            document.getElementById('myModal1').style.display = "none";
-                        }
+                        // On stoppe l'évent pour ajouter un restaurant
+                        that.maCarte.off('click', ajoutResto);
                     }
                 } else {
                     alert("sessionStorage n'est pas supporté");
                 }
             })
-        })
-
+        }
     }
 
 
-    // TODO: Voir problème des comments user qui ne peuvent être mis que dans un seul resto?
-    // TODO: voir problème ajout resto à vide (fenêtre modale ouverte et non rempli, puis ajout ailleurs et resto apparait au premier endroit)
-    // TODO: Empêcher ajout d'un 2ème resto sans marqueur
-    // TODO: voir pour comment garder comment user et new resto si moveend map (supprimer remove item sessionstorage ?
+    // TODO: Voir problème des comments user qui s'efface lors du move de la map
+    // TODO: Empêcher ajout d'autres restos sans marqueur (unbind sur bouton valid)
+    // TODO: voir pour empêcher message d'erreur quand ouverture commentaires d'un resto ajouté (puisque vide) avec "placeId"??
     // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
+    // TODO: css à faire
+    // TODO: page "mentions-légales" à faire
 }
 
 

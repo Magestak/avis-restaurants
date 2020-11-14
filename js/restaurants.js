@@ -23,6 +23,7 @@ class Restaurant {
         this.resultats;
         this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
         this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
+        this.commentUser = {};
     }
 
     /**
@@ -30,7 +31,6 @@ class Restaurant {
      * @return { object }
      */
     createMarker() {
-        let that = this;
         let latLng = this.location;
         let titleInfo = `
         ${this.name}
@@ -42,16 +42,15 @@ class Restaurant {
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
         });
-        that.marqueurResto = L.marker(latLng, {icon: iconResto}).addTo(that.maCarte);
-        that.marqueurResto.bindPopup(titleInfo);
+        this.marqueurResto = L.marker(latLng, {icon: iconResto}).addTo(this.maCarte);
+        this.marqueurResto.bindPopup(titleInfo);
     }
 
     /**
      * Supprime le marqueur qui identifie le restaurant sur la map
      */
     removeMarker() {
-        let that = this;
-        that.maCarte.removeLayer(that.marqueurResto);
+        this.maCarte.removeLayer(this.marqueurResto);
     }
 
     /**
@@ -161,7 +160,7 @@ class Restaurant {
                 }
 
                 // On écoute la validation du bouton d'envoi du formulaire
-                boutonValidModalResto.addEventListener('click', function (event) {
+                boutonValidModalResto.addEventListener('click', function(event) {
                     // On bloque l'envoi du formulaire
                     event.preventDefault();
 
@@ -177,34 +176,31 @@ class Restaurant {
                         let commentaire = sessionStorage.getItem("comment-modal-resto");
                         let note = sessionStorage.getItem("note-modal-resto");
 
-                        // Création du nouveau commentaire avec les données recueillies
-                        if ((pseudo !== "") && (note !== "") && (commentaire !== "")) {
-                            let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
-                            commentUser.initializeHtml();
+                        // On crée le commentaire avec les données recueillies dans le formulaire et on l'affiche
+                        let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
+                        commentUser.initializeHtml();
 
-                            // Si le commentaire existe
-                            if (commentUser) {
-                                // On masque le bouton d'ajout de commentaires
-                                boutonAjoutCommentResto.style.display = "none";
+                        // On identifie le nom du resto associé au commentaire crée et on le stocke dans session storage
+                        // pour réutilisation ultérieure du commentaire si nécessaire
+                        let nameRestoUser = commentUser.resultats.firstChild.textContent;
+                        sessionStorage.setItem("nameRestoUser", nameRestoUser);
 
-                                // On vide le contenu de session storage
-                                //sessionStorage.clear();
-                                // ou
-                                //sessionStorage.removeItem('pseudo-comment-modal-resto');
-                                //sessionStorage.removeItem('comment-modal-resto');
-                                //sessionStorage.removeItem('note-modal-resto');
+                        // Si le commentaire existe
+                        if (commentUser) {
+                            // On masque le bouton d'ajout de commentaires
+                            boutonAjoutCommentResto.style.display = "none";
 
-                                // On réinitialise les valeurs des input
-                                document.getElementById('pseudo-comment-modal-resto').value = '';
-                                document.getElementById('comment-modal-resto').value = '';
-                                document.getElementById('note-modal-resto').value = '';
+                            // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
+                            boutonValidModalResto.disabled = true;
 
-                                // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
-                                boutonValidModalResto.disabled = true;
+                            // On réinitialise les valeurs des input
+                            //document.getElementById('pseudo-comment-modal-resto').value = '';
+                            //document.getElementById('comment-modal-resto').value = '';
+                            //document.getElementById('note-modal-resto').value = '';
 
-                                // On ferme la modale
-                                document.getElementById('myModal').style.display = "none";
-                            }
+                            // On ferme la modale
+                            document.getElementById('myModal').style.display = "none";
+
                         }
                     } else {
                         alert("sessionStorage n'est pas supporté");
@@ -245,19 +241,36 @@ class Restaurant {
     getComments() {
         let that = this;
 
+        // Si le restaurant est issu du fichier JSON, on prend les commentaires dans le fichier
         if (that.commentsJson) {
             that.commentsJson.forEach(function(comment) {
                 let commentObject = new Comment("Anonyme", comment.stars, comment.comment, that.resultats);
                 commentObject.initializeHtml();
             });
         } else {
+            // Si les commentaires sont issus de l'API Google Places, on récupère les commentaires via une requête AJAX et le "placeID" du restaurant
             let placeId = that.id;
-            that.getCommentsApi(placeId);
+            if (placeId !== null) {
+                that.getCommentsApi(placeId);
+            } else {
+                console.log("Pas encore de commentaires, car le restaurant a été ajouté par l'utilisateur.")
+            }
+        }
+        // Si un commentaire associé au nom du restaurant est stocké dans session storage, on l'affiche
+        if (sessionStorage.getItem('nameRestoUser') === that.name) {
+            // On récupère les données stockées dans "session storage"
+            let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
+            let commentaire = sessionStorage.getItem("comment-modal-resto");
+            let note = sessionStorage.getItem("note-modal-resto");
+
+            // On recrée le commentaire avec les données récupérées dans "session storage"
+            let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
+            commentUser.initializeHtml();
         }
     }
 
     /**
-     * Requête pour récupérer les commentaires des restaurants via l'api
+     * Requête pour récupérer les commentaires des restaurants via l'api Google Places
      * @param placeId
      */
     getCommentsApi(placeId) {
