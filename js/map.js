@@ -310,7 +310,7 @@ class Map {
                 }
             }
             // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModal1Resto.addEventListener('click',function (event) {
+            boutonValidModal1Resto.addEventListener('click', function (event){
                 // On bloque l'envoi du formulaire
                 event.preventDefault();
 
@@ -364,6 +364,7 @@ class Map {
     // TODO: voir pour empêcher message d'erreur quand ouverture commentaires d'un resto ajouté (puisque vide) avec "placeId"??
     // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
     // TODO: css à faire
+    // TODO: amélioration: voir pour ouverture commentaires du resto en cliquant sur le marker (dans méthode create marker?)
     // TODO: page "mentions-légales" à faire
 }
 

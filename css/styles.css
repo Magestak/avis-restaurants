@@ -4,28 +4,46 @@
     padding: 0;
 }
 /********* wrapper et génériques *********/
-
-
-
+body {
+    background-color: #ffbf80;
+}
+.col-left {
+    height: 90vh;
+    overflow: auto;
+ }
 /************** Carte *****************/
 #map {
     width: 100vw;
-    height: 90vh; /* ou 800px ?*/
+    height: 90vh;
     z-index: 1;
 }
-/************* Résultats **************/
+
+/************** Filtre étoiles **************/
+.filter-etoiles {
+    margin-bottom: 20px;
+}
+/************ Container liste restaurants ************/
+#restaurants-list {
+    background-color: #ffd9b3;
+    margin-right: 16px;
+}
 .resultats {
+    min-height: 130px;
     overflow: auto;
     position: relative;
+    border-bottom: 1px solid #a6a6a6;
 }
-.bouton-ajout-comment-resto {
-    float: right;
+.name-resto, .note-resto-img, .address {
+    padding: 0 15px;
 }
-/* Nom Restaurant */
 .name-resto {
     cursor: pointer;
 }
-/* Bouton Close */
+.bouton-ajout-comment-resto {
+    float: right;
+    margin-right: 30px;
+    margin-top: 60px;
+}
 .close {
     position: absolute;
     top: 2%;
@@ -34,28 +52,35 @@
     font-weight: bold;
     display: block;
 }
-/************* Ajout de commentaires *************/
+.image-resto {
+    padding: 0 15px;
+}
+/* Contenu commentaires */
+.ajout-commentaires {
+    border-bottom: 1px solid #a6a6a6;
+    padding: 10px 15px;
+}
+.etoiles-commentaires, .ajout-comment-commentaires {
+    margin-top: 10px;
+}
+/************* formulaires ajout de commentaires et ajout resto *************/
+/* Validité des inputs des formulaires */
 input:invalid {
     background-color: #ffdddd;
 }
-
 form:invalid {
     border: 5px solid #ffdddd;
 }
-
 input:valid {
     background-color: #ddffdd;
 }
-
 form:valid {
     border: 5px solid #ddffdd;
 }
-
 input:required {
     border-color: #800000;
     border-width: 3px;
 }
-
 input:required:invalid {
     border-color: #c00000;
 }

@@ -19,7 +19,7 @@ class Restaurant {
         if (commentsJson !== undefined) {
             this.commentsJson = commentsJson;
         }
-        this.photos = this.getUrl();
+        this.photos = this.getPhoto();
         this.resultats;
         this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
         this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
@@ -93,6 +93,7 @@ class Restaurant {
 
         // Crée une balise <img> pour afficher une photo du restaurant et la rend non visible
         let imageResto = document.createElement('img');
+        imageResto.className = "image-resto";
         imageResto.src = that.photos;
         imageResto.style.display = "none";
 
@@ -101,10 +102,6 @@ class Restaurant {
         closeCommentResto.className = "close";
         closeCommentResto.src = "img/close.png";
         closeCommentResto.style.display = "none";
-
-        // Charge les avis provenant de l' API et les rend non visibles
-        this.resultats.style.height = "120px";
-        this.resultats.style.overflow = "hidden";
 
         // Crée un bouton pour l'ouverture d'une "modale" d'ajout d'avis user et le rend non visible
         let boutonAjoutCommentResto = document.createElement('button');
@@ -116,7 +113,7 @@ class Restaurant {
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
         nameResto.addEventListener('click', function (e) {
             e.target.style.color = "#FC6354";
-            that.resultats.style.backgroundColor = "#EFEEE4";
+            that.resultats.style.backgroundColor = "#FFE6CC";
             that.resultats.style.height = "500px";
             that.resultats.style.overflow = "auto";
 
@@ -139,12 +136,18 @@ class Restaurant {
 
             // On écoute l'ouverture de la modale d'ajout de commentaires
             boutonAjoutCommentResto.addEventListener('click', function () {
-
                 // On récupère le bouton d'envoi du formulaire
                 let boutonValidModalResto = document.getElementById('bouton-valid-modal-resto');
 
                 // On récupère le formulaire
                 let formCommentResto = document.getElementById('form-comment-resto');
+
+                // Si il y a déjà eu un commentaire et que l'utilisateur a utilisé "clear" dans "session storage",
+                // On réinitialise les valeurs des input
+                document.getElementById('pseudo-comment-modal-resto').value = '';
+                document.getElementById('comment-modal-resto').value = '';
+                document.getElementById('note-modal-resto').value = '';
+
 
                 // Pour activer le bouton d'envoi du formulaire, on s'assure que les input sont bien remplis
                 formCommentResto.pseudo.addEventListener('change', verifInput);
@@ -153,8 +156,8 @@ class Restaurant {
 
                 function verifInput() {
                     if ((formCommentResto.pseudo.value !== '')&&
-                    (formCommentResto.comment.value !== '') &&
-                    (formCommentResto.note.value !== '')) {
+                        (formCommentResto.comment.value !== '') &&
+                        (formCommentResto.note.value !== '')) {
                         boutonValidModalResto.disabled = false;
                     }
                 }
@@ -182,38 +185,35 @@ class Restaurant {
 
                         // On identifie le nom du resto associé au commentaire crée et on le stocke dans session storage
                         // pour réutilisation ultérieure du commentaire si nécessaire
-                        let nameRestoUser = commentUser.resultats.firstChild.textContent;
+                        let nameRestoUser = that.name;
                         sessionStorage.setItem("nameRestoUser", nameRestoUser);
 
-                        // Si le commentaire existe
-                        if (commentUser) {
-                            // On masque le bouton d'ajout de commentaires
-                            boutonAjoutCommentResto.style.display = "none";
+                        // On masque le bouton d'ajout de commentaires
+                        boutonAjoutCommentResto.style.display = "none";
 
-                            // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
-                            boutonValidModalResto.disabled = true;
+                        // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
+                        boutonValidModalResto.disabled = true;
 
-                            // On réinitialise les valeurs des input
-                            //document.getElementById('pseudo-comment-modal-resto').value = '';
-                            //document.getElementById('comment-modal-resto').value = '';
-                            //document.getElementById('note-modal-resto').value = '';
+                        // On ferme la modale
+                        document.getElementById('myModal').style.display = "none";
 
-                            // On ferme la modale
-                            document.getElementById('myModal').style.display = "none";
-
-                        }
                     } else {
                         alert("sessionStorage n'est pas supporté");
                     }
                 })
             })
+            if ((sessionStorage.getItem("pseudo-comment-modal-resto")) &&
+                (sessionStorage.getItem("comment-modal-resto")) &&
+                (sessionStorage.getItem("note-modal-resto"))) {
+                boutonAjoutCommentResto.disabled = true;
+            }
 
             // Fonction qui masque les éléments qui étaient par défaut non visible.
             closeCommentResto.addEventListener('click', function() {
                 nameResto.style.color = "";
                 that.resultats.style.backgroundColor = '';
                 boutonAjoutCommentResto.style.display = "none";
-                that.resultats.style.height = "120px";
+                that.resultats.style.height = "130px";
                 that.resultats.style.overflow = "hidden";
                 closeCommentResto.style.display = "none";
             })
@@ -297,7 +297,7 @@ class Restaurant {
      * Récupère l'image du restaurant avec street view
      * @return {string}
      */
-    getUrl() {
+    getPhoto() {
         let latitude = this.location.lat;
         let longitude = this.location.lng;
 

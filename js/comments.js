@@ -19,7 +19,7 @@ class Comment {
         // Récupère le pseudo
         let ajoutNomCommentaires = document.createElement('div');
         ajoutNomCommentaires.className = 'ajout-nom-commentaires';
-        ajoutNomCommentaires.textContent = `Votre pseudo : ${that.name}`;
+        ajoutNomCommentaires.textContent = `Pseudo: ${that.name}`;
 
         // Récupère la note
         let x = Math.floor(that.rating);
@@ -39,7 +39,7 @@ class Comment {
         // Récupère le commentaire
         let ajoutCommentCommentaires = document.createElement('div');
         ajoutCommentCommentaires.className = 'ajout-comment-commentaires';
-        ajoutCommentCommentaires.textContent = `Votre commentaire : " ${that.comment} "`;
+        ajoutCommentCommentaires.textContent = `Commentaire : " ${that.comment} "`;
 
         // Insère les éléments crées dans le DOM
         ajoutCommentaires.appendChild(ajoutNomCommentaires);
