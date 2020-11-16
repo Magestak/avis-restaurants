@@ -27,7 +27,6 @@ class Map {
             navigator.geolocation.getCurrentPosition(showPosition, showError);
         } else {
             confirm("Geolocation is not supported by this browser.");
-            //this.marqueurUser = L.marker(L.latLng(this.coordsFromBrowser.lat, this.coordsFromBrowser.lng)).addTo(this.maCarte);
             this.marqueurUser = L.marker(L.latLng(this.positionDefault.lat, this.positionDefault.lng)).addTo(this.maCarte);
         }
 
@@ -85,7 +84,7 @@ class Map {
         }
 
         // On initialise la carte
-        this.maCarte = L.map('map').setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 14);
+        this.maCarte = L.map('map', {scrollWheelZoom: false}).setView([that.coordsFromBrowser.lat, that.coordsFromBrowser.lng], 14);
 
         // On charge les "tuiles"
         L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
@@ -188,7 +187,8 @@ class Map {
 
         // Pour chaque restaurant
         this.restaurants.forEach(restaurant => {
-            restaurant.removeMarker(); // TODO: voir si nécessaire de garder
+            restaurant.removeMarker();
+
             // On crée le contenu Html
             restaurant.initHtml();
 
@@ -338,7 +338,7 @@ class Map {
                         L.latLng(coordNewResto.lat, coordNewResto.lng),
                         nomNouveauResto,
                         adresseNouveauResto,
-                        noteNouveauResto,
+                        parseInt(noteNouveauResto),
                         null);
 
                     // Si le nouveau restaurant est crée
@@ -367,7 +367,6 @@ class Map {
     // TODO: Empêcher ajout d'autres restos sans marqueur (unbind sur bouton valid)
     // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
     // TODO: amélioration: voir pour ouverture commentaires du resto en cliquant sur le marker (dans méthode create marker?)
-    // TODO: page "mentions-légales" à faire
 }
 
 

@@ -300,7 +300,7 @@ class Restaurant {
         let latitude = this.location.lat;
         let longitude = this.location.lng;
 
-        let urlPhotos = "https://maps.googleapis.com/maps/api/streetview?size=300x150&" +
+        let urlPhotos = "https://maps.googleapis.com/maps/api/streetview?size=400x200&" +
             "location="+latitude+","+longitude+"&heading=151.78&pitch=-0.76&radius=50&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
         return urlPhotos;
     }
