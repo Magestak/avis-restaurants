@@ -297,6 +297,11 @@ class Map {
             // On récupère le formulaire
             let formResto = document.getElementById('form-resto');
 
+            // Si il y a déjà eu un resto et que l'utilisateur a rechargé la page, on réinitialise les valeurs des input
+            document.getElementById('nom-modal1-resto').value = '';
+            document.getElementById('address-modal1-resto').value = '';
+            document.getElementById('note-modal1-resto').value = '';
+
             // Pour activer le bouton d'envoi du formulaire, on s'assure que les input sont bien remplis
             formResto.nom.addEventListener('change', verifInput);
             formResto.address.addEventListener('change', verifInput);
@@ -359,11 +364,8 @@ class Map {
     }
 
 
-    // TODO: Voir problème des comments user qui s'efface lors du move de la map
     // TODO: Empêcher ajout d'autres restos sans marqueur (unbind sur bouton valid)
-    // TODO: voir pour empêcher message d'erreur quand ouverture commentaires d'un resto ajouté (puisque vide) avec "placeId"??
     // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
-    // TODO: css à faire
     // TODO: amélioration: voir pour ouverture commentaires du resto en cliquant sur le marker (dans méthode create marker?)
     // TODO: page "mentions-légales" à faire
 }

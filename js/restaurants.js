@@ -23,7 +23,6 @@ class Restaurant {
         this.resultats;
         this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
         this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
-        this.commentUser = {};
     }
 
     /**
@@ -213,7 +212,7 @@ class Restaurant {
                 nameResto.style.color = "";
                 that.resultats.style.backgroundColor = '';
                 boutonAjoutCommentResto.style.display = "none";
-                that.resultats.style.height = "130px";
+                that.resultats.style.height = "100px";
                 that.resultats.style.overflow = "hidden";
                 closeCommentResto.style.display = "none";
             })

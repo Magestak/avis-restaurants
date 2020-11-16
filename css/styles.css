@@ -10,39 +10,18 @@ body {
 .col-left {
     height: 90vh;
     overflow: auto;
- }
-/************** Carte *****************/
-#map {
-    width: 100vw;
-    height: 90vh;
-    z-index: 1;
 }
-
-/************** Filtre étoiles **************/
-.filter-etoiles {
-    margin-bottom: 20px;
-}
-/************ Container liste restaurants ************/
 #restaurants-list {
     background-color: #ffd9b3;
-    margin-right: 16px;
+    margin-top: 10px;
 }
 .resultats {
-    min-height: 130px;
     overflow: auto;
     position: relative;
     border-bottom: 1px solid #a6a6a6;
 }
-.name-resto, .note-resto-img, .address {
-    padding: 0 15px;
-}
 .name-resto {
     cursor: pointer;
-}
-.bouton-ajout-comment-resto {
-    float: right;
-    margin-right: 30px;
-    margin-top: 60px;
 }
 .close {
     position: absolute;
@@ -51,18 +30,25 @@ body {
     font-size: 28px;
     font-weight: bold;
     display: block;
+    cursor: pointer;
 }
-.image-resto {
-    padding: 0 15px;
-}
-/* Contenu commentaires */
 .ajout-commentaires {
     border-bottom: 1px solid #a6a6a6;
     padding: 10px 15px;
 }
-.etoiles-commentaires, .ajout-comment-commentaires {
-    margin-top: 10px;
+.name-resto, .note-resto-img, .address {
+    padding: 0 15px;
 }
+.etoiles-commentaires, .ajout-comment-commentaires {
+    margin-top: 5px;
+}
+
+/************** Carte *****************/
+#map {
+    height: 90vh;
+    z-index: 1;
+}
+
 /************* formulaires ajout de commentaires et ajout resto *************/
 /* Validité des inputs des formulaires */
 input:invalid {
@@ -83,4 +69,143 @@ input:required {
 }
 input:required:invalid {
     border-color: #c00000;
+}
+/* Autres */
+input {
+    margin: 10px 0;
+}
+/******************** Media small ***********************/
+@media screen and (max-width: 601px){
+    #map {
+        margin-top: 20px;
+    }
+    .title {
+        font-size: 22px;
+    }
+    .title-filter {
+        font-size: 18px;
+    }
+    .filter-etoiles {
+        font-size: 14px;
+    }
+    #etoiles-mini, #etoiles-maxi {
+        font-size: 12px;
+    }
+    .resultats {
+        height: auto;
+    }
+    .name-resto {
+        font-size: 16px;
+    }
+    .address {
+        font-size: 14px;
+    }
+    .image-resto {
+        padding: 10px;
+        width: 100%;
+    }
+    .name-resto, .note-resto-img, .address {
+        margin: 5px 0;
+    }
+    .bouton-ajout-comment-resto {
+        margin-left: 100px;
+        font-size: 12px;
+    }
+    .ajout-nom-commentaires, .ajout-comment-commentaires {
+        font-size: 12px;
+    }
+}
+
+/******************* Media medium ***************************/
+@media screen and (min-width: 602px){
+    .col-left {
+        height: 90vh;
+    }
+    #restaurants-list {
+        margin-right: 16px;
+    }
+    .title {
+        font-size: 22px;
+    }
+    .title-filter {
+        font-size: 18px;
+    }
+    .filter-etoiles {
+        font-size: 14px;
+    }
+    #etoiles-mini, #etoiles-maxi {
+        font-size: 12px;
+    }
+    .name-resto {
+        font-size: 16px;
+    }
+    .address {
+        font-size: 14px;
+    }
+    .image-resto {
+        padding: 10px;
+        width: 100%;
+    }
+    .ajout-nom-commentaires, .ajout-comment-commentaires {
+        font-size: 12px;
+    }
+    .bouton-ajout-comment-resto {
+        margin-left: 60px;
+        font-size: 12px;
+    }
+}
+
+/******************* Media large ***********************/
+@media screen and (min-width: 992px) {
+    .col-left {
+        height: 90vh;
+    }
+    #map {
+        width: 100vw;
+        height: 90vh;
+    }
+    .title {
+        font-size: 30px;
+    }
+    .title-filter {
+        font-size: 24px;
+    }
+    .filter-etoiles {
+        font-size: 16px;
+    }
+    #etoiles-mini, #etoiles-maxi {
+        font-size: 14px;
+    }
+    .name-resto {
+        font-size: 20px;
+    }
+    .address {
+        font-size: 18px;
+    }
+    .name-resto, .note-resto-img, .address {
+        margin: 10px 0;
+    }
+    .image-resto {
+        width: 100%;
+        padding: 0 15px;
+    }
+    .filter-etoiles {
+        margin-bottom: 20px;
+    }
+    #restaurants-list {
+        margin-right: 16px;
+    }
+    .resultats {
+        min-height: 130px;
+    }
+    .bouton-ajout-comment-resto {
+        margin: 10px 120px;
+        font-size: 14px;
+    }
+    .etoiles-commentaires, .ajout-comment-commentaires {
+        margin-top: 10px;
+    }
+    .ajout-nom-commentaires, .ajout-comment-commentaires {
+        font-size: 14px;
+    }
 }

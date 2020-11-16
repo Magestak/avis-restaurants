@@ -39,7 +39,7 @@ class Comment {
         // Récupère le commentaire
         let ajoutCommentCommentaires = document.createElement('div');
         ajoutCommentCommentaires.className = 'ajout-comment-commentaires';
-        ajoutCommentCommentaires.textContent = `Commentaire : " ${that.comment} "`;
+        ajoutCommentCommentaires.textContent = `Commentaire: " ${that.comment} "`;
 
         // Insère les éléments crées dans le DOM
         ajoutCommentaires.appendChild(ajoutNomCommentaires);
