@@ -285,14 +285,14 @@ class Map {
         let coordNewResto = {};
         this.maCarte.on('click', ajoutResto);
 
+        // On récupère le bouton d'envoi du formulaire
+        let boutonValidModal1Resto = document.getElementById('bouton-valid-modal1-resto');
+
         function ajoutResto(e) {
             coordNewResto = e.latlng;
 
             // On ouvre la modale d'ajout de restaurant
             document.getElementById('myModal1').style.display = "block";
-
-            // On récupère le bouton d'envoi du formulaire
-            let boutonValidModal1Resto = document.getElementById('bouton-valid-modal1-resto');
 
             // On récupère le formulaire
             let formResto = document.getElementById('form-resto');
@@ -314,59 +314,57 @@ class Map {
                     boutonValidModal1Resto.disabled = false;
                 }
             }
-            // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModal1Resto.addEventListener('click', function (event){
-                // On bloque l'envoi du formulaire
-                event.preventDefault();
-
-                // On utilise sessionStorage pour stocker la création du nouveau resto le temps de la visite
-                if (typeof sessionStorage != 'undefined') {
-                    // On enregistre les données saisies par l'utilisateur
-                    sessionStorage.setItem('nom-modal1-resto', document.getElementById('nom-modal1-resto').value);
-                    sessionStorage.setItem('address-modal1-resto', document.getElementById('address-modal1-resto').value);
-                    sessionStorage.setItem('note-modal1-resto', document.getElementById('note-modal1-resto').value);
-
-                    // On récupère les données stockées dans "session storage"
-                    let nomNouveauResto = sessionStorage.getItem("nom-modal1-resto");
-                    let adresseNouveauResto = sessionStorage.getItem("address-modal1-resto");
-                    let noteNouveauResto = sessionStorage.getItem("note-modal1-resto");
-
-                    // Création du nouveau restaurant avec les données recueillies
-                    // Création d'une instance de la classe restaurant
-                    let nouveauRestaurant = new Restaurant(that.maCarte,
-                        null,
-                        L.latLng(coordNewResto.lat, coordNewResto.lng),
-                        nomNouveauResto,
-                        adresseNouveauResto,
-                        parseInt(noteNouveauResto),
-                        null);
-
-                    // Si le nouveau restaurant est crée
-                    if (nouveauRestaurant) {
-                        nouveauRestaurant.createMarker(); // Crée un marqueur pour chaque restaurant
-                        nouveauRestaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
-
-                        // On ajoute le restaurant crée à la liste des restaurants
-                        that.restaurants.push(nouveauRestaurant);
-                        console.log("THAT RESTAURANTS: ", that.restaurants);
-
-                        // On ferme la modale
-                        document.getElementById('myModal1').style.display = "none";
-
-                        // On stoppe l'évent pour ajouter un restaurant
-                        that.maCarte.off('click', ajoutResto);
-                    }
-                } else {
-                    alert("sessionStorage n'est pas supporté");
-                }
-            })
         }
+        // On écoute la validation du bouton d'envoi du formulaire
+        boutonValidModal1Resto.addEventListener('click', function (event){
+            // On bloque l'envoi du formulaire
+            event.preventDefault();
+
+            // On utilise sessionStorage pour stocker la création du nouveau resto le temps de la visite
+            if (typeof sessionStorage != 'undefined') {
+                // On enregistre les données saisies par l'utilisateur
+                sessionStorage.setItem('nom-modal1-resto', document.getElementById('nom-modal1-resto').value);
+                sessionStorage.setItem('address-modal1-resto', document.getElementById('address-modal1-resto').value);
+                sessionStorage.setItem('note-modal1-resto', document.getElementById('note-modal1-resto').value);
+
+                // On récupère les données stockées dans "session storage"
+                let nomNouveauResto = sessionStorage.getItem("nom-modal1-resto");
+                let adresseNouveauResto = sessionStorage.getItem("address-modal1-resto");
+                let noteNouveauResto = sessionStorage.getItem("note-modal1-resto");
+
+                // Création du nouveau restaurant avec les données recueillies
+                // Création d'une instance de la classe restaurant
+                let nouveauRestaurant = new Restaurant(that.maCarte,
+                    null,
+                    L.latLng(coordNewResto.lat, coordNewResto.lng),
+                    nomNouveauResto,
+                    adresseNouveauResto,
+                    parseInt(noteNouveauResto),
+                    null);
+
+                // Si le nouveau restaurant est crée
+                if (nouveauRestaurant) {
+                    nouveauRestaurant.createMarker(); // Crée un marqueur pour chaque restaurant
+                    nouveauRestaurant.initHtml(); // Crée le contenu HTML pour chaque restaurant
+
+                    // On ajoute le restaurant crée à la liste des restaurants
+                    that.restaurants.push(nouveauRestaurant);
+                    console.log("THAT RESTAURANTS: ", that.restaurants);
+
+                    // On ferme la modale
+                    document.getElementById('myModal1').style.display = "none";
+
+                    // On stoppe l'évent pour ajouter un restaurant
+                    that.maCarte.off('click', ajoutResto);
+                }
+            } else {
+                alert("sessionStorage n'est pas supporté");
+            }
+        })
     }
 
 
-    // TODO: Empêcher ajout d'autres restos sans marqueur (unbind sur bouton valid)
     // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
-    // TODO: amélioration: voir pour ouverture commentaires du resto en cliquant sur le marker (dans méthode create marker?)
 }
 
 
