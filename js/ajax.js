@@ -8,12 +8,8 @@ function ajaxGet(url, callback) {
     req.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
             callback(this.responseText);
-            //console.log(this.getAllResponseHeaders());
         }
     };
     req.open("GET", url);
     req.send(null);
 }
-
-// Adresse serveur proxy crée sur Heroku = "https://blooming-sierra-85473.herokuapp.com/"
-// ou bien = https://cors-anywhere.herokuapp.com/

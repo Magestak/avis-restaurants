@@ -183,7 +183,6 @@ class Map {
 
         // Après élimination des doublons, on réaffecte le tableau filtré à "that.restaurants"
         this.restaurants = newArray;
-        console.log("THAT RESTAURANTS: ", that.restaurants);
 
         // Pour chaque restaurant
         this.restaurants.forEach(restaurant => {
@@ -349,7 +348,6 @@ class Map {
 
                     // On ajoute le restaurant crée à la liste des restaurants
                     that.restaurants.push(nouveauRestaurant);
-                    console.log("THAT RESTAURANTS: ", that.restaurants);
 
                     // On ferme la modale
                     document.getElementById('myModal1').style.display = "none";
@@ -362,9 +360,6 @@ class Map {
             }
         })
     }
-
-
-    // TODO: Voir pour cacher clé API dans une variable? Regarder doc places
 }
 
 

@@ -102,7 +102,63 @@ class Restaurant {
         closeCommentResto.src = "img/close.png";
         closeCommentResto.style.display = "none";
 
-        // Crée un bouton pour l'ouverture d'une "modale" d'ajout d'avis user et le rend non visible
+        // On récupère la modal d'ajout de commentaire par l'utilisateur
+        let commentModal = document.querySelector("#myModal");
+
+        // On récupère le bouton d'envoi du formulaire d'ajout d'avis
+        let boutonValidModalResto = document.getElementById('bouton-valid-modal-resto');
+
+        // Ajoute le commentaire utilisateur au restaurant demandé
+        function validAjoutComment(event) {
+            // On bloque l'envoi du formulaire
+            event.preventDefault();
+
+            // On utilise sessionStorage pour stocker les commentaires le temps de la visite
+            if(typeof sessionStorage !='undefined') {
+                // On enregistre les données saisies par l'utilisateur
+                sessionStorage.setItem('pseudo-comment-modal-resto', document.getElementById('pseudo-comment-modal-resto').value);
+                sessionStorage.setItem('comment-modal-resto', document.getElementById('comment-modal-resto').value);
+                sessionStorage.setItem('note-modal-resto', document.getElementById('note-modal-resto').value);
+
+                // On récupère les données stockées dans "session storage"
+                let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
+                let commentaire = sessionStorage.getItem("comment-modal-resto");
+                let note = sessionStorage.getItem("note-modal-resto");
+
+                // On crée le commentaire avec les données recueillies dans le formulaire et on l'affiche
+                let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
+                commentUser.initializeHtml();
+
+                // On identifie le nom du resto associé au commentaire crée et on le stocke dans session storage
+                // pour réutilisation ultérieure du commentaire si nécessaire
+                let nameRestoUser = that.name;
+                sessionStorage.setItem("nameRestoUser", nameRestoUser);
+
+                // On masque le bouton d'ajout de commentaires
+                boutonAjoutCommentResto.style.display = "none";
+
+                // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
+                boutonValidModalResto.disabled = true;
+
+                // On ferme la modale
+                document.getElementById('myModal').style.display = "none";
+            } else {
+                alert("sessionStorage n'est pas supporté");
+            }
+        }
+
+        // On écoute le bouton de fermeture de la modal d'ajout de commentaire
+        let closeCommentModalButton = document.querySelector("#close-comment-modal");
+        closeCommentModalButton.addEventListener('click', e => {
+            e.preventDefault();
+            commentModal.style.display = "none";
+
+            // On annule l'écouteur d'évènement sur le bouton de validation de la modal pour éviter
+            // l'ajout de commentaire lié à l'ouverture de la modal sans validation
+            boutonValidModalResto.removeEventListener('click', validAjoutComment);
+        });
+
+        // Crée un bouton pour l'ouverture d'une "modal" d'ajout d'avis user et le rend non visible
         let boutonAjoutCommentResto = document.createElement('button');
         boutonAjoutCommentResto.className = 'bouton-ajout-comment-resto';
         boutonAjoutCommentResto.setAttribute("onclick", "document.getElementById('myModal').style.display='block'");
@@ -145,9 +201,6 @@ class Restaurant {
             })
         })
 
-        // On récupère le bouton d'envoi du formulaire d'ajout d'avis
-        let boutonValidModalResto = document.getElementById('bouton-valid-modal-resto');
-
         // On écoute l'ouverture de la modale d'ajout de commentaires
         boutonAjoutCommentResto.addEventListener('click',function () {
             // On récupère le formulaire
@@ -158,7 +211,6 @@ class Restaurant {
             document.getElementById('pseudo-comment-modal-resto').value = '';
             document.getElementById('comment-modal-resto').value = '';
             document.getElementById('note-modal-resto').value = '';
-
 
             // Pour activer le bouton d'envoi du formulaire, on s'assure que les input sont bien remplis
             formCommentResto.pseudo.addEventListener('change', verifInput);
@@ -173,44 +225,7 @@ class Restaurant {
                 }
             }
             // On écoute la validation du bouton d'envoi du formulaire
-            boutonValidModalResto.addEventListener('click', function(event) {
-                // On bloque l'envoi du formulaire
-                event.preventDefault();
-
-                // On utilise sessionStorage pour stocker les commentaires le temps de la visite
-                if(typeof sessionStorage !='undefined') {
-                    // On enregistre les données saisies par l'utilisateur par l'intermédiaire de "session storage"
-                    sessionStorage.setItem('pseudo-comment-modal-resto', document.getElementById('pseudo-comment-modal-resto').value);
-                    sessionStorage.setItem('comment-modal-resto', document.getElementById('comment-modal-resto').value);
-                    sessionStorage.setItem('note-modal-resto', document.getElementById('note-modal-resto').value);
-
-                    // On récupère les données stockées dans "session storage"
-                    let pseudo = sessionStorage.getItem("pseudo-comment-modal-resto");
-                    let commentaire = sessionStorage.getItem("comment-modal-resto");
-                    let note = sessionStorage.getItem("note-modal-resto");
-
-                    // On crée le commentaire avec les données recueillies dans le formulaire et on l'affiche
-                    let commentUser = new Comment(pseudo, note, commentaire, that.resultats);
-                    commentUser.initializeHtml();
-
-                    // On identifie le nom du resto associé au commentaire crée et on le stocke dans session storage
-                    // pour réutilisation ultérieure du commentaire si nécessaire
-                    let nameRestoUser = that.name;
-                    sessionStorage.setItem("nameRestoUser", nameRestoUser);
-
-                    // On masque le bouton d'ajout de commentaires
-                    boutonAjoutCommentResto.style.display = "none";
-
-                    // On remet l'attribut "disabled" sur le bouton d'envoi du formulaire
-                    boutonValidModalResto.disabled = true;
-
-                    // On ferme la modale
-                    document.getElementById('myModal').style.display = "none";
-
-                } else {
-                    alert("sessionStorage n'est pas supporté");
-                }
-            })
+            boutonValidModalResto.addEventListener('click', validAjoutComment);
         })
         if ((sessionStorage.getItem("pseudo-comment-modal-resto")) &&
             (sessionStorage.getItem("comment-modal-resto")) &&
