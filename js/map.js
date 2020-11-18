@@ -13,7 +13,7 @@ class Map {
         };
         this.marqueurUser = {}; // Le marqueur de la position géolocalisée de l'utilisateur
         this.restaurants = []; // La liste des restaurants
-        this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
+        this.magic = "AIzaSyBDUNetyL3ydc7HBVvK2DFIhNZ1veToQ50";
     }
 
     /**

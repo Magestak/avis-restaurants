@@ -22,7 +22,7 @@ class Restaurant {
         this.photos = this.getPhoto();
         this.resultats;
         this.marqueurResto = {}; // Le marqueur qui identifie le restaurant sur la carte
-        this.magic = "AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
+        this.magic = "AIzaSyBDUNetyL3ydc7HBVvK2DFIhNZ1veToQ50";
     }
 
     /**
@@ -110,8 +110,9 @@ class Restaurant {
         boutonAjoutCommentResto.style.display = 'none';
 
         // "EventListener" sur le nom du restaurant qui permet l'affichage des éléments non visibles
-        nameResto.addEventListener('click', function (e) {
+        nameResto.addEventListener('click', function (e){
             e.target.style.color = "#FC6354";
+            nameResto.style.color = "#FC6354";
             that.resultats.style.backgroundColor = "#FFE6CC";
             that.resultats.style.height = "500px";
             that.resultats.style.overflow = "auto";
@@ -122,6 +123,9 @@ class Restaurant {
             // Affiche le bouton "close"
             closeCommentResto.style.display = 'block';
 
+            // Affiche le bouton qui permet l' ajout d'avis par l' utilisateur via l' ouverture d'une modale
+            boutonAjoutCommentResto.style.display = 'block';
+
             // Affiche les commentaires de l'API
             if (a === 0) {
                 that.getComments();
@@ -129,9 +133,6 @@ class Restaurant {
             } else if (a === 1) {
                 console.log("Pas de nouveaux commentaires");
             }
-
-            // Affiche le bouton qui permet l' ajout d'avis par l' utilisateur via l' ouverture d'une modale
-            boutonAjoutCommentResto.style.display = 'block';
 
             // Fonction qui masque les éléments qui étaient par défaut non visible.
             closeCommentResto.addEventListener('click', function() {
@@ -297,9 +298,7 @@ class Restaurant {
         let latitude = this.location.lat;
         let longitude = this.location.lng;
 
-        let urlPhotos = "https://maps.googleapis.com/maps/api/streetview?size=400x200&" +
-            "location="+latitude+","+longitude+"&heading=151.78&pitch=-0.76&radius=50&key=AIzaSyDLGGNHkcJlMUPGCeneagK5ar6lHWJ7UqU";
-        return urlPhotos;
+        return "https://maps.googleapis.com/maps/api/streetview?size=400x200&location="+latitude+","+longitude+"&heading=151.78&pitch=-0.76&radius=50&key=AIzaSyBDUNetyL3ydc7HBVvK2DFIhNZ1veToQ50";
     }
 
 }
