@@ -21,22 +21,22 @@ class Map {
      */
     initMap() {
         let that = this;
-
-        // On récupère la latitude et la longitude de la position de l'utilisateur et on gère les erreurs si nécessaire
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            confirm("Geolocation is not supported by this browser.");
-            this.marqueurUser = L.marker(L.latLng(this.positionDefault.lat, this.positionDefault.lng)).addTo(this.maCarte);
-        }
-
-        // On crée un icône personnalisé pour la librairie leaflet qui sera utilisé pour marquer la position de l'utilisateur
+        // On crée un icone personnalisé pour la librairie leaflet qui sera utilisé pour marquer la position de l'utilisateur
         let iconUser = L.icon({
             iconUrl: 'img/map-marker-alt-solid-purple.png',
             iconSize: [25, 38],
             iconAnchor: [22, 94],
             popupAnchor: [-3, -76],
         });
+
+        // On récupère la latitude et la longitude de la position de l'utilisateur et on gère les erreurs si nécessaire
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            confirm("Geolocation is not supported by this browser.");
+            this.marqueurUser = L.marker(L.latLng(this.positionDefault.lat, this.positionDefault.lng), {icon: iconUser}).addTo(this.maCarte);
+            this.marqueurUser.bindPopup("<p>Position par défaut</p>");
+        }
 
         /**
          * Récupère la latitude et la longitude
@@ -332,7 +332,6 @@ class Map {
                 let noteNouveauResto = sessionStorage.getItem("note-modal1-resto");
 
                 // Création du nouveau restaurant avec les données recueillies
-                // Création d'une instance de la classe restaurant
                 let nouveauRestaurant = new Restaurant(that.maCarte,
                     null,
                     L.latLng(coordNewResto.lat, coordNewResto.lng),

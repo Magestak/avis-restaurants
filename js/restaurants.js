@@ -304,7 +304,6 @@ class Restaurant {
         });
     }
 
-
     /**
      * Récupère l'image du restaurant avec street view
      * @return {string}
